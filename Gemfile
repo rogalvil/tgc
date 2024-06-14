@@ -39,8 +39,11 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
 
-  gem 'factory_bot_rails', '~> 6.2'
-  gem 'rspec-rails', '~> 6.0.0'
+  # FactoryBot integration between FactoryBot and Rails
+  gem 'factory_bot_rails', '~> 6.4', '>= 6.4.3'
+
+  # RSpec is a testing tool for Ruby, created for behavior-driven development (BDD)
+  gem 'rspec-rails', '~> 6.1', '>= 6.1.2'
 end
 
 group :development do
@@ -55,24 +58,21 @@ group :development do
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-  gem 'rubocop', '~> 1.29', require: false
+  gem 'rubocop', '~> 1.64', '>= 1.64.1', require: false
 
   # IDE tools for code completion, inline documentation, and static analysis
-  gem 'solargraph', '~> 0.45', require: false
-
-  # Helps us to format ERB files, so our eyes don't bleed :)
-  gem 'htmlbeautifier', '~> 1.4', require: false
+  gem 'solargraph', '~> 0.50.0', require: false
 end
 
 group :test do
   # Webmock is a library for stubbing http request (with Faraday in the case)
-  gem 'webmock', '~> 3.14'
+  gem 'webmock', '~> 3.23', '>= 3.23.1'
 
   # Provides RSpec- and Minitest-compatible one-liners to test common Rails
   # functionality that, if written by hand, would be much longer, more complex,
   # and error-prone.
-  gem 'shoulda-matchers', '~> 5.1'
+  gem 'shoulda-matchers', '~> 6.2'
 
   # Generates test vs. code coverage reports
-  gem 'simplecov', '~> 0.21.2', require: false
+  gem 'simplecov', '~> 0.22.0', require: false
 end
