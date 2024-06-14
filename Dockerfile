@@ -49,14 +49,14 @@ RUN addgroup --gid ${DEVELOPER_UID} ${DEVELOPER_USERNAME} \
 # (A workaround to a side effect of setting WORKDIR before creating the user)
 RUN userhome=$(eval echo ~${DEVELOPER_USERNAME}) \
     && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} $userhome \
-    && mkdir -p /workspaces/rails-api-docker-vscode \
-    && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} /workspaces/rails-api-docker-vscode
+    && mkdir -p /workspaces/tgc \
+    && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} /workspaces/tgc
 
 # Add the app's "bin/" directory to PATH:
-ENV PATH=/workspaces/rails-api-docker-vscode/bin:$PATH
+ENV PATH=/workspaces/tgc/bin:$PATH
 
 # Set the app path as the working directory:
-WORKDIR /workspaces/rails-api-docker-vscode
+WORKDIR /workspaces/tgc
 
 # Change to the developer user:
 USER ${DEVELOPER_USERNAME}
@@ -73,7 +73,7 @@ RUN bundle config set --local jobs 4
 FROM development-base AS testing
 
 # Copy the project's Gemfile and Gemfile.lock files:
-COPY --chown=${DEVELOPER_USERNAME} Gemfile* /workspaces/rails-api-docker-vscode/
+COPY --chown=${DEVELOPER_USERNAME} Gemfile* /workspaces/tgc/
 
 # Configure bundler to exclude the gems from the "development" group when
 # installing, so we get the leanest Docker image possible to run tests:
@@ -142,7 +142,7 @@ USER ${DEVELOPER_USERNAME}
 
 # Copy the gems installed in the "testing" stage:
 COPY --from=testing /usr/local/bundle /usr/local/bundle
-COPY --from=testing /workspaces/rails-api-docker-vscode/ /workspaces/rails-api-docker-vscode/
+COPY --from=testing /workspaces/tgc/ /workspaces/tgc/
 
 # Configure bundler to not exclude any gem group, so we now get all the gems
 # specified in the Gemfile:
@@ -152,7 +152,7 @@ RUN bundle config unset --local without
 RUN bundle install
 
 # Fix Git's 'fatal: detected dubious ownership in repository directory' error
-RUN git config --global --add safe.directory /workspaces/rails-api-docker-vscode
+RUN git config --global --add safe.directory /workspaces/tgc
 
 
 # Stage 5: Builder =============================================================
@@ -169,7 +169,7 @@ ARG DEVELOPER_USERNAME=you
 ARG DEVELOPER_USERNAME=you
 
 # Copy the full contents of the project:
-COPY --chown=${DEVELOPER_USERNAME} . /workspaces/rails-api-docker-vscode/
+COPY --chown=${DEVELOPER_USERNAME} . /workspaces/tgc/
 
 # Configure bundler to exclude the gems from the "development" and "test" groups
 # from the installed gemset, which should set them out to remove on cleanup:
@@ -229,14 +229,14 @@ FROM runtime AS release
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 
 # Copy the app code and compiled assets from the "builder" stage to the
-# final destination at /workspaces/rails-api-docker-vscode:
-COPY --from=builder --chown=nobody:nogroup /workspaces/rails-api-docker-vscode /workspaces/rails-api-docker-vscode
+# final destination at /workspaces/tgc:
+COPY --from=builder --chown=nobody:nogroup /workspaces/tgc /workspaces/tgc
 
 # Set the container user to 'nobody':
 USER nobody
 
 # Set the RAILS and PORT default values:
-ENV HOME=/workspaces/rails-api-docker-vscode \
+ENV HOME=/workspaces/tgc \
     RAILS_ENV=production \
     RAILS_FORCE_SSL=yes \
     RAILS_LOG_TO_STDOUT=yes \
@@ -247,10 +247,10 @@ ENV HOME=/workspaces/rails-api-docker-vscode \
 RUN SECRET_KEY_BASE=10167c7f7654ed02b3557b05b88ece rails secret > /dev/null
 
 # Set the installed app directory as the working directory:
-WORKDIR /workspaces/rails-api-docker-vscode
+WORKDIR /workspaces/tgc
 
 # Set the entrypoint script:
-ENTRYPOINT [ "/workspaces/rails-api-docker-vscode/bin/entrypoint" ]
+ENTRYPOINT [ "/workspaces/tgc/bin/entrypoint" ]
 
 # Set the default command:
 CMD [ "puma" ]

@@ -28,11 +28,11 @@ services:
       args:
         DEVELOPER_UID: ${UID:-1000}
         DEVELOPER_USERNAME: ${USER:-you}
-    image: rogalvil/rails-api-docker-vscode${TESTING_IMAGE_TAG:-:testing}
+    image: rogalvil/tgc${TESTING_IMAGE_TAG:-:testing}
 
     volumes:
       # Mount the app code into the app containers:
-      - .:/workspaces/rails-api-docker-vscode
+      - .:/workspaces/tgc
 
     # Keep the stdin open, so we can attach to our app container's process
     # and do things such as byebug, etc:
@@ -78,10 +78,10 @@ services:
       <<: *app_build
       target: development
 
-    image: rogalvil/rails-api-docker-vscode:development
+    image: rogalvil/tgc:development
 
     ports:
-      - ${RAILS_DOCKER_VSCODE_PORT:-3000}:3000
+      - ${TGC_PORT:-3000}:3000
 
     # The command we want to execute by default when running the container
     command: rails server -b 0.0.0.0
