@@ -64,14 +64,6 @@
     // Git Lens:
     "eamodio.gitlens",
 
-    // PostCSS Language Support:
-    // - see https://tailwindcss.com/docs/editor-setup#syntax-support
-    "csstools.postcss",
-
-    // IntelliSense for VS Code:
-    // - see https://tailwindcss.com/docs/editor-setup#intelli-sense-for-vs-code
-    "bradlc.vscode-tailwindcss",
-
     // Pull Request and Issue Provider for GitHub:
     "github.vscode-pull-request-github",
 
@@ -79,13 +71,11 @@
     "github.copilot",
 
     "redhat.vscode-xml",
-    "eamodio.gitlens",
     "kaiwood.endwise",
     "formulahendry.auto-close-tag",
     "formulahendry.auto-rename-tag",
     "esbenp.prettier-vscode",
     "aliariff.vscode-erb-beautify",
     "diz.ecsstractor-port",
-    "bradlc.vscode-tailwindcss"
   ]
 }
