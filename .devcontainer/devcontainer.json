@@ -37,7 +37,7 @@
   // will bring up all services unless this is configured:
   "runServices": ["postgres"],
 
-  "workspaceFolder": "/workspaces/rails-api-docker-vscode",
+  "workspaceFolder": "/workspaces/tgc",
 
   // An array of extension IDs that specify the extensions to install inside the
   // container when you first attach to it.
