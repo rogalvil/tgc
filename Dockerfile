@@ -1,8 +1,8 @@
 # Stage 1: Runtime =============================================================
 # The minimal package dependencies required to run the app in the release image:
 
-# Use the official Ruby 3.1.2 Slim Bullseye image as base:
-FROM ruby:3.2.2-slim-bullseye AS runtime
+# Use the official Ruby 3.3.3 Slim Bullseye image as base:
+FROM ruby:3.3.3-slim-bullseye AS runtime
 
 # We'll set MALLOC_ARENA_MAX for optimization purposes & prevent memory bloat
 # https://www.speedshop.co/2017/12/04/malloc-doubles-ruby-memory.html

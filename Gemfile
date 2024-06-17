@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '3.2.2'
+ruby '3.3.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '7.1.3.4'
@@ -36,8 +36,6 @@ gem 'bootsnap', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem 'rack-cors'
-
-gem 'minitest', '5.23.1'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -92,3 +90,7 @@ gem 'oj'
 
 # JSON APIs using object serialization
 gem 'jsonapi-serializer'
+
+# Fix ambiguous gems
+gem 'drb', '2.2.0'
+gem 'minitest', '5.20.0'
