@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 ruby '3.2.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
+gem 'rails', '7.1.3.2'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -37,9 +37,11 @@ gem 'bootsnap', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem 'rack-cors'
 
+gem 'minitest', '5.23.1'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[ mri windows ]
+  gem 'debug', platforms: %i[mri windows]
 
   # FactoryBot integration between FactoryBot and Rails
   gem 'factory_bot_rails', '~> 6.4', '>= 6.4.3'
@@ -89,4 +91,4 @@ gem 'devise-jwt', '~> 0.11.0'
 gem 'oj'
 
 # JSON APIs using object serialization
-gem 'fast_jsonapi'
+gem 'jsonapi-serializer'

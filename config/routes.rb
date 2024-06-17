@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     end
   end
 
+  # Devise routes for user authentication
   devise_for :users, defaults: { format: :json },
                      path: '',
                      path_names: {

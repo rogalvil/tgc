@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
+# User serializer
 class UserSerializer
-  include FastJsonapi::ObjectSerializer
-  attributes :id, :email, :created_at
+  include JSONAPI::Serializer
+  attributes :id, :email, :name, :created_at
 end
