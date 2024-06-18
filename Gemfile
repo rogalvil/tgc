@@ -46,6 +46,9 @@ group :development, :test do
 
   # RSpec is a testing tool for Ruby, created for behavior-driven development (BDD)
   gem 'rspec-rails', '~> 6.1', '>= 6.1.2'
+
+  # JSON API testing suite for RSpec
+  gem 'jsonapi-rspec'
 end
 
 group :development do
@@ -85,12 +88,18 @@ gem 'devise', '~> 4.9', '>= 4.9.4'
 # Devise extension that uses JWT tokens for user authentication
 gem 'devise-jwt', '~> 0.11.0'
 
+# Authorization framework for Rails applications
+gem 'action_policy'
+
 # Fast JSON parser and Object marshaller as a Ruby gem
 gem 'oj'
 
 # JSON APIs using object serialization
 gem 'jsonapi-serializer'
 
-# Fix ambiguous gems
+# PG Enum support
+gem 'activerecord-pg_enum', '~> 2.0'
+
+# Fix ambiguous gems on container
 gem 'drb', '2.2.0'
 gem 'minitest', '5.20.0'
