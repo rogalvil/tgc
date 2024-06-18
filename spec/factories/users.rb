@@ -8,5 +8,9 @@ FactoryBot.define do
     trait :with_invalid_name do
       name { '3294{}+{-}' }
     end
+
+    trait :admin do
+      role { 'admin' }
+    end
   end
 end
