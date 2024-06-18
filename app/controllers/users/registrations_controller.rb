@@ -14,7 +14,7 @@ module Users
         render status: :ok
       elsif request.method == 'POST' && resource.persisted?
         # current_user is created successfully
-        render json: { user: current_user.as_json(except: :jti) }, status: :ok
+        render json: { user: UserSerializer.new(current_user).serializable_hash }, status: :ok
       else
         # current_user is not created successfully
         render json: { messages: resource.errors.full_messages.uniq },
