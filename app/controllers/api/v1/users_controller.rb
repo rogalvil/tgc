@@ -6,11 +6,17 @@ module Api
   module V1
     # Users controller
     class UsersController < ApplicationController
-      # skip_before_action :authenticate_user!, only: %i[index]
+      include ActionPolicy::Controller
 
       def index
+        authorize! User, to: :index?
         users = User.all
-        # render json: users, each_serializer: UserSerializer, status: :ok
+        render json: UserSerializer.new(users).serializable_hash.to_json, status: :ok
+      end
+
+      def customers
+        authorize! User, to: :customers?
+        users = User.where(role: 'customer')
         render json: UserSerializer.new(users).serializable_hash.to_json, status: :ok
       end
     end
