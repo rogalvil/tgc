@@ -6,9 +6,9 @@ module Api
   module V1
     # Users controller
     class UsersController < ApplicationController
-      include ActionPolicy::Controller
       before_action :user, only: %i[show update]
       before_action :users, only: %i[index]
+      skip_before_action :authenticate_user!, only: %i[show]
 
       def index
         authorize! User, to: :read?
