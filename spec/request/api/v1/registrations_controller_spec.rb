@@ -25,7 +25,6 @@ RSpec.describe Users::RegistrationsController, type: :request do
     end
 
     it 'returns a token' do
-
       expect(response.headers['Authorization']).to be_present
     end
 

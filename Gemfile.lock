@@ -339,7 +339,7 @@ PLATFORMS
   aarch64-linux
 
 DEPENDENCIES
-  action_policy
+  action_policy (~> 0.6.9)
   activerecord-pg_enum (~> 2.0)
   bootsnap
   debug

@@ -4,7 +4,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :users, only: %i[index customers] do
+      resources :users, only: %i[index show customers] do
         collection do
           get 'customers'
         end
@@ -24,6 +24,8 @@ Rails.application.routes.draw do
                        sessions: 'users/sessions',
                        registrations: 'users/registrations'
                      }
+
+  match '*unmatched', to: 'application#route_not_found', via: :all
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

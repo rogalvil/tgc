@@ -89,7 +89,7 @@ gem 'devise', '~> 4.9', '>= 4.9.4'
 gem 'devise-jwt', '~> 0.11.0'
 
 # Authorization framework for Rails applications
-gem 'action_policy'
+gem 'action_policy', '~> 0.6.9'
 
 # Fast JSON parser and Object marshaller as a Ruby gem
 gem 'oj'

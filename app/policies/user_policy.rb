@@ -9,4 +9,8 @@ class UserPolicy < ApplicationPolicy
   def customers?
     true
   end
+
+  def show?
+    user.admin? || record.customer?
+  end
 end
