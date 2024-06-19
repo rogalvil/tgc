@@ -19,7 +19,7 @@ module Users
     end
 
     def respond_to_on_destroy
-      if @authenticated && current_user.nil?
+      if @authenticated && current_user.guest?
         # current_user is logged out successfully
         render json: { messages: ['Logout successfully'] }, status: :ok
       else
