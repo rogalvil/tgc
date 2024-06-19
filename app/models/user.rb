@@ -11,5 +11,5 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :name, format: { with: /\A[\p{L}\p{M} ]+\z/ }
 
-  enum role: { customer: 'customer', admin: 'admin' }
+  enum role: { customer: 'customer', admin: 'admin', guest: 'guest' }
 end
