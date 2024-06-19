@@ -11,10 +11,6 @@ class UserPolicy < ApplicationPolicy
     admin? || guest? || record.customer?
   end
 
-  def update?
-    admin? || owner?
-  end
-
   relation_scope do |relation|
     next relation if user.admin?
 
