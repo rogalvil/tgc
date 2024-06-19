@@ -47,12 +47,25 @@ RSpec.describe UserPolicy, type: :policy do
         user.role = 'admin'
       end
     end
-    context 'Owner' do
-      let!(:user) { record }
-      succeed 'when is customer updating themselves'
+    succeed 'when is customer updating themselves' do
+      let(:user) { record }
       succeed 'when is admin updating themselves' do
         before { user.role = 'admin' }
       end
+    end
+  end
+
+  describe_rule :index? do
+    succeed 'when user is an admin' do
+      before { user.role = 'admin' }
+    end
+
+    succeed 'when user is a customer' do
+      before { user.role = 'customer' }
+    end
+
+    succeed 'when user is a guest' do
+      before { user = Guest.new }
     end
   end
 end
