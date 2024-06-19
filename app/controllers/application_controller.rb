@@ -4,7 +4,6 @@
 class ApplicationController < ActionController::API
   include ActionPolicy::Controller
   authorize :user, through: :current_user
-
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -22,6 +21,10 @@ class ApplicationController < ActionController::API
 
   def route_not_found
     raise ActionController::RoutingError, 'Not Found'
+  end
+
+  def current_user
+    super || Guest.new
   end
 
   private
