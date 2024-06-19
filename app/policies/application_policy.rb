@@ -15,6 +15,10 @@ class ApplicationPolicy < ActionPolicy::Base
 
   private
 
+  def guest?
+    user.guest?
+  end
+
   def admin?
     user.admin?
   end
