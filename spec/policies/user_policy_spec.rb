@@ -1,53 +1,53 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe UserPolicy, type: :policy do
-  let(:admin_user) { build :user, :admin }
-  let(:customer_user) { build :user }
+  let(:user) { build_stubbed(:user) }
+  let(:record) { build_stubbed(:user) }
+  let(:context) { { user: } }
 
-  # permissions :index? do
-  #   it 'grants access if user is an admin' do
-  #     expect(subject).to permit(admin, User)
-  #   end
+  describe_rule :show? do
+    succeed 'when customer is viewing themselves' do
+      before { user = record }
+    end
 
-  #   it 'denies access if user is not an admin' do
-  #     expect(subject).not_to permit(customer, User)
-  #   end
-  # end
+    succeed 'when customer viewing another customer' do
+      before do
+        user.role = 'customer'
+        record.role = 'customer'
+      end
+    end
 
-  # describe_rule :index? do
-  #   context 'when user is an admin' do
-  #     let(:user) { admin_user }
+    failed 'when customer viewing an admin' do
+      before do
+        user.role = 'customer'
+        record.role = 'admin'
+      end
+    end
 
-  #     it 'grants access' do
-  #       expect(subject.apply(user, :index?)).to be_truthy
-  #     end
-  #   end
+    succeed 'when admin viewing customer' do
+      before { user.role = 'admin' }
+    end
 
-  #   context 'when user is not an admin' do
-  #     let(:user) { customer_user }
+    succeed 'when admin viewing another admin' do
+      before do
+        user.role = 'admin'
+        record.role = 'admin'
+      end
+    end
 
-  #     it 'denies access' do
-  #       expect(subject.apply(user, :index?)).to be_falsey
-  #     end
-  #   end
-  # end
-  # describe_rule :index? do
-  #   succeed 'allows access if user is an admin' do
-  #     let(:user) { admin_user }
-  #   end
+    succeed 'when guest viewing customer' do
+      before { user = Guest.new }
+    end
 
-  #   failed 'denies access if user is not an admin' do
-  #     let(:user) { customer_user }
-  #   end
-  # end
+    failed 'when guest viewing an admin' do
+      before do
+        user = Guest.new
+        record.role = 'admin'
+      end
+    end
+  end
 
-  # describe_rule :customers? do
-  #   succeed 'allows access to anyone' do
-  #     let(:user) { admin_user }
-  #   end
 
-  #   succeed 'allows access to anyone' do
-  #     let(:user) { customer_user }
-  #   end
-  # end
 end
