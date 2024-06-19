@@ -7,29 +7,44 @@ module Api
     # Users controller
     class UsersController < ApplicationController
       include ActionPolicy::Controller
-      before_action :user, only: %i[show]
+      before_action :user, only: %i[show update]
+      before_action :users, only: %i[index]
 
       def index
-        authorize! User, to: :index?
-        users = User.all
-        render json: UserSerializer.new(users).serializable_hash.to_json, status: :ok
-      end
-
-      def customers
-        authorize! User, to: :customers?
-        users = User.where(role: 'customer')
-        render json: UserSerializer.new(users).serializable_hash.to_json, status: :ok
+        authorize! User, to: :read?
+        render json: serializer(@users), status: :ok
       end
 
       def show
         authorize! @user, to: :show?
-        render json: UserSerializer.new(@user).serializable_hash.to_json, status: :ok
+        render json: serializer(@user), status: :ok
+      end
+
+      def update
+        authorize! @user, to: :update?
+        if @user.update(user_params)
+          render json: serializer(@user), status: :ok
+        else
+          render json: { messages: @user.errors.full_messages.uniq }, status: :unprocessable_entity
+        end
       end
 
       private
 
+      def serializer(object)
+        UserSerializer.new(object).serializable_hash.to_json
+      end
+
       def user
-        @user = User.find(params[:id])
+        @user = users.find(params[:id])
+      end
+
+      def users
+        @users = authorized_scope(User.all)
+      end
+
+      def user_params
+        params.require(:user).permit(:name, :email)
       end
     end
   end
