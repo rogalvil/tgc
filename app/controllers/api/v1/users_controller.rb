@@ -7,6 +7,7 @@ module Api
     # Users controller
     class UsersController < ApplicationController
       include ActionPolicy::Controller
+      before_action :user, only: %i[show]
 
       def index
         authorize! User, to: :index?
@@ -18,6 +19,17 @@ module Api
         authorize! User, to: :customers?
         users = User.where(role: 'customer')
         render json: UserSerializer.new(users).serializable_hash.to_json, status: :ok
+      end
+
+      def show
+        authorize! @user, to: :show?
+        render json: UserSerializer.new(@user).serializable_hash.to_json, status: :ok
+      end
+
+      private
+
+      def user
+        @user = User.find(params[:id])
       end
     end
   end
