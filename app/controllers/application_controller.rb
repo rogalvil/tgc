@@ -9,7 +9,9 @@ class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   rescue_from ActionPolicy::Unauthorized do |ex|
-    render json: { message: "User not allowed to #{ex.rule}" }, status: :forbidden
+    error_message = ex.policy::ERROR_MESSAGES[ex.rule.to_sym] ||
+                    'You not allowed to perform this action'
+    render json: { message: error_message }, status: :forbidden
   end
 
   rescue_from ActiveRecord::RecordNotFound do
