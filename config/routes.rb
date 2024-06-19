@@ -4,17 +4,12 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :users, only: %i[index show customers] do
-        collection do
-          get 'customers'
-        end
-      end
+      resources :users, only: %i[index show update]
     end
   end
 
   # Devise routes for user authentication
-  devise_for :users, defaults: { format: :json },
-                     path: '',
+  devise_for :users, defaults: { format: :json }, path: '',
                      path_names: {
                        sign_in: 'api/v1/login',
                        sign_out: 'api/v1/logout',
@@ -25,6 +20,7 @@ Rails.application.routes.draw do
                        registrations: 'users/registrations'
                      }
 
+  # Catch all unmatched routes
   match '*unmatched', to: 'application#route_not_found', via: :all
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
