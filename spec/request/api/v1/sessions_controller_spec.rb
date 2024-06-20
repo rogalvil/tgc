@@ -3,59 +3,47 @@
 require 'rails_helper'
 
 RSpec.describe Users::SessionsController, type: :request do
-  let(:user) { create :user }
-  let(:login_url) { '/api/v1/login' }
-  let(:logout_url) { '/api/v1/logout' }
+  let(:user) { create(:user) }
 
-  context 'When logging in' do
-    before do
-      login_with_api(user)
+  describe 'POST /login' do
+    context 'with valid credentials' do
+      before { login_with_api(email: user.email, password: user.password) }
+
+      it 'returns a token' do
+        expect(response.headers['Authorization']).to be_present
+      end
+
+      it 'returns 200 status' do
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it 'returns a token' do
-      expect(response.headers['Authorization']).to be_present
-    end
+    context 'with missing password' do
+      before { login_with_api(email: user.email, password: nil) }
 
-    it 'returns 200' do
-      expect(response.status).to eq(200)
-    end
-  end
-
-  context 'When password is missing' do
-    before do
-      post login_url, params: {
-        user: {
-          email: user.email,
-          name: user.name,
-          password: nil
-        }
-      }
-    end
-
-    it 'returns 401' do
-      expect(response.status).to eq(401)
+      it 'returns 401 status' do
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
   end
 
-  context 'When logging out' do
-    before do
-      login_with_api(user)
+  describe 'POST /logout' do
+    context 'with valid token' do
+      before { @auth_token = login_with_api(email: user.email, password: user.password) }
+
+      it 'logs out successfully' do
+        logout_with_api({ 'Authorization': @auth_token })
+        expect(json['messages']).to include('Logout successfully')
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it 'returns 200' do
-      delete logout_url, headers: {
-        'Authorization': response.headers['Authorization']
-      }
-      expect(json['messages']).to include('Logout successfully')
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  context 'When logging out without a token' do
-    it 'returns 422' do
-      delete logout_url
-      expect(json['messages']).to include('Logout was not successful')
-      expect(response).to have_http_status(422)
+    context 'without token' do
+      it 'returns 422 status' do
+        logout_with_api({})
+        expect(json['messages']).to include('Logout was not successful')
+        expect(response).to have_http_status(422)
+      end
     end
   end
 end
