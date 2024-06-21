@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :product do
     sequence(:sku) { |n| "SKU#{n}" }
     sequence(:name) { |n| "Product Name #{n}" }
-    description { 'Description of the product' }
+    sequence(:description) { |n| "Productdescription#{n} dummy" }
     price { 10.0 }
     stock { 100 }
     status { 'inactive' }

@@ -11,6 +11,8 @@ class Product < ApplicationRecord
   enum status: { active: 'active', inactive: 'inactive',
                  discontinued: 'discontinued', preorder: 'preorder' }
 
+  scope :search, ->(query) { where('name ILIKE ? OR description ILIKE ?', "%#{query}%", "%#{query}%") }
+
   before_save :normalize_sku
 
   private

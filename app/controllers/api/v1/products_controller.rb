@@ -12,6 +12,7 @@ module Api
 
       def index
         @products = authorized_scope(@products)
+        @products = @products.search(params[:query]) if params[:query].present?
         authorize! @products, to: :read?
         render json: serializer(@products), status: :ok
       end

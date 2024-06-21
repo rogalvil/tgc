@@ -28,6 +28,22 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(json['data'].size).to eq(all_products.size)
         expect(response).to have_http_status(:ok)
       end
+
+      it 'returns a filtered list of products by name' do
+        get '/api/v1/products', params: { query: active_product.name }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a filtered list of products by description' do
+        get '/api/v1/products', params: { query: active_product.description.split(" ").first }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     context 'when authenticated as customer' do
@@ -46,6 +62,22 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(json['data'].size).to eq(2)
         expect(response).to have_http_status(:ok)
       end
+
+      it 'returns a filtered list of products by name' do
+        get '/api/v1/products', params: { query: active_product.name }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a filtered list of products by description' do
+        get '/api/v1/products', params: { query: active_product.description.split(" ").first }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     context 'when not authenticated' do
@@ -59,6 +91,22 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(json['data'].any? { |p| p['id'].to_i == inactive_product.id }).to be_falsey
         expect(json['data'].any? { |p| p['id'].to_i == discontinued_product.id }).to be_falsey
         expect(json['data'].size).to eq(2)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a filtered list of products by name' do
+        get '/api/v1/products', params: { query: active_product.name }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a filtered list of products by description' do
+        get '/api/v1/products', params: { query: active_product.description.split(" ").first }, headers: { 'Authorization': @auth_token }
+        expect(json).not_to be_empty
+        expect(json['data'].size).to eq(1)
+        expect(json['data'].first['id'].to_i).to eq(active_product.id)
         expect(response).to have_http_status(:ok)
       end
     end
