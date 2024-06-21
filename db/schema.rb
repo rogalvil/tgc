@@ -10,13 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_17_221114) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_21_053625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "product_status_type", ["active", "inactive", "discontinued", "preorder"]
   create_enum "role_type", ["customer", "admin"]
+
+  create_table "products", force: :cascade do |t|
+    t.string "sku", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.integer "stock", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.enum "status", default: "inactive", null: false, enum_type: "product_status_type"
+    t.index ["sku"], name: "index_products_on_sku", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name", null: false

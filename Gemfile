@@ -97,9 +97,6 @@ gem 'oj'
 # JSON APIs using object serialization
 gem 'jsonapi-serializer'
 
-# PG Enum support
-gem 'activerecord-pg_enum', '~> 2.0'
-
 # Fix ambiguous gems on container
 gem 'drb', '2.2.0'
 gem 'minitest', '5.20.0'
