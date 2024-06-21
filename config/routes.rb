@@ -5,6 +5,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: %i[index show update]
+      resources :products do
+        member do
+          patch :stock, to: 'products#update_stock'
+          patch :status, to: 'products#update_status'
+        end
+      end
     end
   end
 

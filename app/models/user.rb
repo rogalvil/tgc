@@ -8,8 +8,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
-  validates :name, presence: true
-  validates :name, format: { with: /\A[\p{L}\p{M} ]+\z/ }
+  validates :name, presence: true, format: { with: /\A[\p{L}\p{M} ]+\z/ }
 
   enum role: { customer: 'customer', admin: 'admin', guest: 'guest' }
 end
