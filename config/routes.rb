@@ -11,6 +11,9 @@ Rails.application.routes.draw do
           patch :status, to: 'products#update_status'
         end
       end
+      resources :orders, only: %i[index show create destroy status] do
+        resources :order_items, only: %i[create update destroy], path: :items
+      end
     end
   end
 
@@ -19,7 +22,8 @@ Rails.application.routes.draw do
                      path_names: {
                        sign_in: 'api/v1/login',
                        sign_out: 'api/v1/logout',
-                       registration: 'api/v1/signup'
+                       registration: 'api/v1/signup',
+                       password: 'api/v1/password' # TODO - Rewiew as working
                      },
                      controllers: {
                        sessions: 'users/sessions',

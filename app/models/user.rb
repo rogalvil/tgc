@@ -3,6 +3,7 @@
 # User model
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
+  has_many :orders, dependent: :destroy, inverse_of: :user
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
