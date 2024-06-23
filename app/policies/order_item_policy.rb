@@ -4,22 +4,16 @@
 class OrderItemPolicy < ApplicationPolicy
   ERROR_MESSAGES = {
     edit?: 'You are not allowed to edit item',
-    read?: 'You are not allowed to view item'
+    read?: 'You are not allowed to view item',
+    create?: 'You are not allowed to create item',
+    update?: 'You are not allowed to update item'
   }.freeze
 
   def read?
     admin? || owner?
   end
 
-  def create?
-    owner? && record.order.pending?
-  end
-
-  def update?
-    (admin? || owner?) && record.order.pending?
-  end
-
-  def destroy?
+  def edit?
     (admin? || owner?) && record.order.pending?
   end
 

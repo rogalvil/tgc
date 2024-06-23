@@ -61,10 +61,6 @@ module Api
       def status_params
         params.require(:order).permit(:status)
       end
-
-      # def calculate_total_price(order)
-      #   order.order_items.sum { |order_item| order_item.quantity * order_item.price }
-      # end
     end
   end
 end

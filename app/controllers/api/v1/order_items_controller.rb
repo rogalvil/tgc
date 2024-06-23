@@ -11,7 +11,7 @@ module Api
 
       def create
         @order_item = @order.order_items.new(order_item_params)
-        authorize! @order_item, to: :edit?
+        authorize! @order_item, to: :create?
         if @order_item.save
           render json: serializer(@order_item), status: :created
         else
@@ -20,7 +20,7 @@ module Api
       end
 
       def update
-        authorize! @order_item, to: :edit?
+        authorize! @order_item, to: :update?
         if @order_item.update(order_item_params)
           render json: serializer(@order_item), status: :ok
         else
