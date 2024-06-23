@@ -8,7 +8,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
   let(:guest) { create(:user, :guest) }
   let(:users) { create_list(:user, 3) }
 
-  describe 'GET /index' do
+  describe 'GET /api/v1/users' do
     context 'when authenticated as admin' do
       before do
         users
@@ -57,7 +57,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
     end
   end
 
-  describe 'GET /show' do
+  describe 'GET /api/v1/users/:id' do
     context 'when authenticated as admin' do
       before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
@@ -103,7 +103,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
     end
   end
 
-  describe 'PUT /update' do
+  describe 'PUT /api/v1/users/:id' do
     let(:valid_attributes) { { user: { name: 'New Name' } } }
 
     context 'when authenticated as admin' do

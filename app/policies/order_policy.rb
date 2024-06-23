@@ -10,7 +10,7 @@ class OrderPolicy < ApplicationPolicy
   alias_rule :update_status?, to: :edit?
 
   def read?
-    admin? || owner?
+    admin? || customer?
   end
 
   def create?

@@ -12,7 +12,10 @@ Rails.application.routes.draw do
         end
       end
       resources :orders, only: %i[index show create destroy status] do
-        resources :order_items, only: %i[create update destroy], path: :items
+        member do
+          patch :status, to: 'orders#update_status'
+        end
+        resources :order_items, path: :items, only: %i[create update destroy]
       end
     end
   end

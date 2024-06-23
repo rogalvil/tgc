@@ -6,11 +6,11 @@ module Api
   module V1
     # Orders controller
     class OrdersController < ApplicationController
-      before_action :order, only: %i[show update destroy update_status]
+      before_action :order, only: %i[show destroy update_status]
       before_action :orders, only: %i[index]
 
       def index
-        authorize! @orders, to: :read?
+        authorize! @orders, to: :index?
         render json: serializer(@orders), status: :ok
       end
 
@@ -21,7 +21,7 @@ module Api
 
       def create
         @order = current_user.orders.new
-        authorize! @order, to: :edit?
+        authorize! @order, to: :create?
         if @order.save
           render json: serializer(@order), status: :created
         else
@@ -30,7 +30,7 @@ module Api
       end
 
       def destroy
-        authorize! @order, to: :edit?
+        authorize! @order, to: :destroy?
         @order.destroy
         head :no_content
       end
@@ -62,9 +62,9 @@ module Api
         params.require(:order).permit(:status)
       end
 
-      def calculate_total_price(order)
-        order.order_items.sum { |order_item| order_item.quantity * order_item.price }
-      end
+      # def calculate_total_price(order)
+      #   order.order_items.sum { |order_item| order_item.quantity * order_item.price }
+      # end
     end
   end
 end
