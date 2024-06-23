@@ -9,10 +9,16 @@ class OrderItem < ApplicationRecord
   belongs_to :product, inverse_of: :order_items
 
   before_validation :set_price, on: %i[create update]
+  after_save :update_order_total
+  after_destroy :update_order_total
 
   private
 
   def set_price
     self.price = product.price
+  end
+
+  def update_order_total
+    order.update_total_price
   end
 end

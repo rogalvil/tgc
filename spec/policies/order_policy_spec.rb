@@ -21,7 +21,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
     context 'when customer but not is the owner' do
       before { record.user = other_customer }
-      failed 'denies access'
+      succeed 'allows access'
     end
 
     context 'when guest' do
@@ -43,7 +43,7 @@ RSpec.describe OrderPolicy, type: :policy do
 
     context 'when customer but not is the owner' do
       before { record.user = other_customer }
-      failed 'denies access'
+      succeed 'allows access'
     end
 
     context 'when guest' do

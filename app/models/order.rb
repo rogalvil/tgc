@@ -10,4 +10,9 @@ class Order < ApplicationRecord
 
   enum status: { pending: 'pending', paid: 'paid', shipped: 'shipped',
                  delivered: 'delivered', cancelled: 'cancelled' }
+
+  def update_total_price
+    self.total_price = order_items.sum { |order_item| order_item.quantity * order_item.price }
+    save
+  end
 end
