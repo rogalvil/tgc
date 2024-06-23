@@ -8,100 +8,121 @@ RSpec.describe ProductPolicy, type: :policy do
   let(:context) { { user: } }
 
   describe_rule :index? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    succeed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      succeed 'allows access'
     end
 
-    succeed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      succeed 'allows access'
     end
   end
 
   describe_rule :show? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    succeed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      succeed 'allows access'
     end
 
-    succeed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      succeed 'allows access'
     end
   end
 
   describe_rule :create? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    failed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      failed 'denies access'
     end
 
-    failed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 
   describe_rule :update? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    failed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      failed 'denies access'
     end
 
-    failed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 
   describe_rule :destroy? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    failed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      failed 'denies access'
     end
 
-    failed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 
   describe_rule :update_stock? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    failed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      failed 'denies access'
     end
 
-    failed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 
   describe_rule :update_status? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      succeed 'allows access'
     end
 
-    failed 'when user is a customer' do
+    context 'when customer' do
       before { user.role = 'customer' }
+      failed 'denies access'
     end
 
-    failed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 end

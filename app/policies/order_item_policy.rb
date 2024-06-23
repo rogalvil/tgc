@@ -11,6 +11,14 @@ class OrderItemPolicy < ApplicationPolicy
     admin? || owner?
   end
 
+  def create?
+    owner? && record.order.pending?
+  end
+
+  def update?
+    (admin? || owner?) && record.order.pending?
+  end
+
   def destroy?
     (admin? || owner?) && record.order.pending?
   end
@@ -26,6 +34,6 @@ class OrderItemPolicy < ApplicationPolicy
   private
 
   def owner?
-    user.id == record.order.user_id
+    user.id == record.order.user_id && customer?
   end
 end

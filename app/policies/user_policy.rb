@@ -8,7 +8,7 @@ class UserPolicy < ApplicationPolicy
   }.freeze
 
   def show?
-    admin? || guest? || record.customer?
+    admin? || (guest? || customer?) && record.customer?
   end
 
   relation_scope do |relation|
