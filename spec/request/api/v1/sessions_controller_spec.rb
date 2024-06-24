@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Users::SessionsController, type: :request do
   let(:user) { create(:user) }
 
-  describe 'POST /login' do
+  describe 'POST /api/v1/login' do
     context 'with valid credentials' do
       before { login_with_api(email: user.email, password: user.password) }
 
@@ -27,7 +27,7 @@ RSpec.describe Users::SessionsController, type: :request do
     end
   end
 
-  describe 'POST /logout' do
+  describe 'POST /api/v1/logout' do
     context 'with valid token' do
       before { @auth_token = login_with_api(email: user.email, password: user.password) }
 

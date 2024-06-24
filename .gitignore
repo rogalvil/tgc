@@ -31,3 +31,9 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore coverage reports.
+/coverage/
+
+# Ignore macOS directory attributes.
+.DS_Store

@@ -6,66 +6,98 @@ RSpec.describe UserPolicy, type: :policy do
   let(:user) { build_stubbed(:user) }
   let(:record) { build_stubbed(:user) }
   let(:context) { { user: } }
+  let(:other_customer) { build_stubbed(:user) }
+  let(:other_admin) { build_stubbed(:user, :admin) }
+
+  describe_rule :index? do
+    context 'when admin' do
+      before { user.role = 'admin' }
+      succeed 'allows access'
+    end
+
+    context 'when customer' do
+      before { user.role = 'customer' }
+      succeed 'allows access'
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      succeed 'allows access'
+    end
+  end
 
   describe_rule :show? do
-    succeed 'when customer viewing another customer'
-
-    succeed 'when customer is viewing themselves' do
-      before { user = record }
-    end
-
-    failed 'when customer viewing an admin' do
-      before { record.role = 'admin' }
-    end
-
-    succeed 'when admin viewing customer' do
+    context 'when admin' do
       before { user.role = 'admin' }
-      succeed 'when admin viewing another admin' do
-        before { record.role = 'admin' }
+      context 'viewing customer' do
+        succeed 'allows access'
+      end
+      context 'viewing another admin' do
+        before { record.role = 'admin'}
+        succeed 'allows access'
+      end
+      context 'viewing themselves' do
+        before { record.id = user.id }
+        succeed 'allows access'
       end
     end
 
-    succeed 'when guest viewing customer' do
-      before { user = Guest.new }
-      failed 'when guest viewing an admin' do
-        before do
-          record.role = 'admin'
-        end
+    context 'when customer' do
+      context 'viewing other customer' do
+        succeed 'allows access'
+      end
+      context 'viewing admin' do
+        before { record.role = 'admin' }
+        failed 'denies access'
+      end
+      context 'viewing themselves' do
+        before { record.id = user.id }
+        succeed 'allows access'
+      end
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      context 'viewing customer' do
+        succeed 'allows access'
+      end
+      context 'viewing admin' do
+        before { record.role = 'admin' }
+        failed 'denies access'
       end
     end
   end
 
   describe_rule :update? do
-    failed 'when user is not the owner or admin' do
-      before do
-        user.role = 'customer'
-        record.role = 'customer'
-      end
-    end
-    succeed 'when user is an admin' do
-      before do
-        user.role = 'admin'
-      end
-    end
-    succeed 'when is customer updating themselves' do
-      let(:user) { record }
-      succeed 'when is admin updating themselves' do
-        before { user.role = 'admin' }
-      end
-    end
-  end
-
-  describe_rule :index? do
-    succeed 'when user is an admin' do
+    context 'when admin' do
       before { user.role = 'admin' }
+      context 'updating customer' do
+        succeed 'allows access'
+      end
+    end
+    context 'when customer' do
+      context 'updating another customer' do
+        failed 'denies access'
+      end
+      context 'updating admin' do
+        before { record.role = 'admin' }
+        failed 'denies access'
+      end
+      context 'updating themselves' do
+        before { record.id = user.id }
+        succeed 'allows access'
+      end
     end
 
-    succeed 'when user is a customer' do
-      before { user.role = 'customer' }
-    end
-
-    succeed 'when user is a guest' do
-      before { user = Guest.new }
+    context 'when guest' do
+      before { user.role = 'guest' }
+      context 'updating customer' do
+        failed 'denies access'
+      end
+      context 'updating admin' do
+        before { record.role = 'admin' }
+        failed 'denies access'
+      end
     end
   end
 end

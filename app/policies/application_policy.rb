@@ -19,6 +19,10 @@ class ApplicationPolicy < ActionPolicy::Base
     user.guest?
   end
 
+  def customer?
+    user.customer?
+  end
+
   def admin?
     user.admin?
   end

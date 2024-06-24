@@ -13,6 +13,8 @@ class Product < ApplicationRecord
 
   scope :search, ->(query) { where('name ILIKE ? OR description ILIKE ?', "%#{query}%", "%#{query}%") }
 
+  has_many :order_items, dependent: :destroy, inverse_of: :product
+
   before_save :normalize_sku
 
   private

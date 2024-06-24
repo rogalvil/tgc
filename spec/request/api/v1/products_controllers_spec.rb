@@ -12,7 +12,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   let(:preorder_product) { create(:product, :preorder) }
   let(:all_products) { [active_product, inactive_product, discontinued_product, preorder_product] }
 
-  describe 'GET /index' do
+  describe 'GET /api/v1/products' do
     context 'when authenticated as admin' do
       before do
         all_products
@@ -112,7 +112,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'GET /show' do
+  describe 'GET /api/v1/products/:id' do
     context 'when authenticated as admin' do
       before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
@@ -162,7 +162,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'POST /create' do
+  describe 'POST /api/v1/products' do
     let(:valid_attributes) do
       {
         product: {
@@ -211,7 +211,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'PUT /update' do
+  describe 'PUT /api/v1/products/:id' do
     let(:valid_attributes) do
       {
         product: {
@@ -284,7 +284,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'DELETE /destroy' do
+  describe 'DELETE /api/v1/products/:id' do
     context 'when authenticated as admin' do
       before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
@@ -316,7 +316,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'PATCH /update_stock' do
+  describe 'PATCH /api/v1/products/:id/stock' do
     let(:valid_attributes) { { product: { stock: 20 } } }
 
     context 'when authenticated as admin' do
@@ -352,7 +352,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'PATCH /update_status' do
+  describe 'PATCH /api/v1/products/:id/status' do
     let(:valid_attributes) { { product: { status: 'inactive' } } }
     let(:invalid_attributes) { { product: { status: '' } } }
 
