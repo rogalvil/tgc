@@ -97,6 +97,10 @@ gem 'oj'
 # JSON APIs using object serialization
 gem 'jsonapi-serializer'
 
+# Rswag is a tool to automatically generate API documentation from RSpec
+gem 'rswag'
+gem 'rswag-ui'
+
 # Fix ambiguous gems on container
 gem 'drb', '2.2.0'
 gem 'minitest', '5.20.0'

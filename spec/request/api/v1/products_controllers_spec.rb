@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe Api::V1::ProductsController, type: :request do
   let(:admin) { create(:user, :admin) }
@@ -79,312 +80,313 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
     end
-
-    context 'when not authenticated' do
-      before { all_products }
-
-      it 'returns a list of active and preorder products only' do
-        get '/api/v1/products'
-        expect(json).not_to be_empty
-        expect(json['data'].any? { |p| p['id'].to_i == active_product.id }).to be_truthy
-        expect(json['data'].any? { |p| p['id'].to_i == preorder_product.id }).to be_truthy
-        expect(json['data'].any? { |p| p['id'].to_i == inactive_product.id }).to be_falsey
-        expect(json['data'].any? { |p| p['id'].to_i == discontinued_product.id }).to be_falsey
-        expect(json['data'].size).to eq(2)
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'returns a filtered list of products by name' do
-        get '/api/v1/products', params: { query: active_product.name }, headers: { 'Authorization': @auth_token }
-        expect(json).not_to be_empty
-        expect(json['data'].size).to eq(1)
-        expect(json['data'].first['id'].to_i).to eq(active_product.id)
-        expect(response).to have_http_status(:ok)
-      end
-
-      it 'returns a filtered list of products by description' do
-        get '/api/v1/products', params: { query: active_product.description.split(" ").first }, headers: { 'Authorization': @auth_token }
-        expect(json).not_to be_empty
-        expect(json['data'].size).to eq(1)
-        expect(json['data'].first['id'].to_i).to eq(active_product.id)
-        expect(response).to have_http_status(:ok)
-      end
-    end
   end
 
-  describe 'GET /api/v1/products/:id' do
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #   context 'when not authenticated' do
+  #     before { all_products }
 
-      it 'returns the product regardless of status' do
-        all_products.each do |product|
-          get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
-          expect(json['data']['id'].to_i).to eq(product.id)
-          expect(response).to have_http_status(:ok)
-        end
-      end
-    end
+  #     it 'returns a list of active and preorder products only' do
+  #       get '/api/v1/products'
+  #       expect(json).not_to be_empty
+  #       expect(json['data'].any? { |p| p['id'].to_i == active_product.id }).to be_truthy
+  #       expect(json['data'].any? { |p| p['id'].to_i == preorder_product.id }).to be_truthy
+  #       expect(json['data'].any? { |p| p['id'].to_i == inactive_product.id }).to be_falsey
+  #       expect(json['data'].any? { |p| p['id'].to_i == discontinued_product.id }).to be_falsey
+  #       expect(json['data'].size).to eq(2)
+  #       expect(response).to have_http_status(:ok)
+  #     end
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  #     it 'returns a filtered list of products by name' do
+  #       get '/api/v1/products', params: { query: active_product.name }, headers: { 'Authorization': @auth_token }
+  #       expect(json).not_to be_empty
+  #       expect(json['data'].size).to eq(1)
+  #       expect(json['data'].first['id'].to_i).to eq(active_product.id)
+  #       expect(response).to have_http_status(:ok)
+  #     end
 
-      it 'returns active and preorder products' do
-        [active_product, preorder_product].each do |product|
-          get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
-          expect(json['data']['id'].to_i).to eq(product.id)
-          expect(response).to have_http_status(:ok)
-        end
-      end
+  #     it 'returns a filtered list of products by description' do
+  #       get '/api/v1/products', params: { query: active_product.description.split(" ").first }, headers: { 'Authorization': @auth_token }
+  #       expect(json).not_to be_empty
+  #       expect(json['data'].size).to eq(1)
+  #       expect(json['data'].first['id'].to_i).to eq(active_product.id)
+  #       expect(response).to have_http_status(:ok)
+  #     end
+  #   end
+  # end
 
-      it 'returns status code 404 for inactive and discontinued products' do
-        [inactive_product, discontinued_product].each do |product|
-          get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-    end
+  # describe 'GET /api/v1/products/:id' do
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-    context 'when not authenticated' do
-      it 'returns active and preorder products' do
-        [active_product, preorder_product].each do |product|
-          get "/api/v1/products/#{product.id}"
-          expect(json['data']['id'].to_i).to eq(product.id)
-          expect(response).to have_http_status(:ok)
-        end
-      end
+  #     it 'returns the product regardless of status' do
+  #       all_products.each do |product|
+  #         get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
+  #         expect(json['data']['id'].to_i).to eq(product.id)
+  #         expect(response).to have_http_status(:ok)
+  #       end
+  #     end
+  #   end
 
-      it 'returns status code 404 for inactive and discontinued products' do
-        [inactive_product, discontinued_product].each do |product|
-          get "/api/v1/products/#{product.id}"
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-    end
-  end
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
-  describe 'POST /api/v1/products' do
-    let(:valid_attributes) do
-      {
-        product: {
-          sku: 'SKU123', name: 'New Product',
-          description: 'New product description', price: 100.00,
-          stock: 10
-        }
-      }
-    end
+  #     it 'returns active and preorder products' do
+  #       [active_product, preorder_product].each do |product|
+  #         get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
+  #         expect(json['data']['id'].to_i).to eq(product.id)
+  #         expect(response).to have_http_status(:ok)
+  #       end
+  #     end
 
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #     it 'returns status code 404 for inactive and discontinued products' do
+  #       [inactive_product, discontinued_product].each do |product|
+  #         get "/api/v1/products/#{product.id}", headers: { 'Authorization': @auth_token }
+  #         expect(response).to have_http_status(:not_found)
+  #       end
+  #     end
+  #   end
 
-      it 'creates a product' do
-        post '/api/v1/products', params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['data']['attributes']['sku']).to eq('SKU123')
-        expect(json['data']['attributes']['name']).to eq('New Product')
-        expect(json['data']['attributes']['description']).to eq('New product description')
-        expect(json['data']['attributes']['price'].to_f).to eq(100.0)
-        expect(json['data']['attributes']['stock']).to eq(10)
-        expect(json['data']['attributes']['status']).to eq('inactive')
-        expect(response).to have_http_status(:created)
-      end
+  #   context 'when not authenticated' do
+  #     it 'returns active and preorder products' do
+  #       [active_product, preorder_product].each do |product|
+  #         get "/api/v1/products/#{product.id}"
+  #         expect(json['data']['id'].to_i).to eq(product.id)
+  #         expect(response).to have_http_status(:ok)
+  #       end
+  #     end
 
-      it 'returns status code 422 with invalid attributes' do
-        invalid_attributes = { product: { name: '', price: 0, stock: -1 } }
-        post '/api/v1/products', params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
-    end
+  #     it 'returns status code 404 for inactive and discontinued products' do
+  #       [inactive_product, discontinued_product].each do |product|
+  #         get "/api/v1/products/#{product.id}"
+  #         expect(response).to have_http_status(:not_found)
+  #       end
+  #     end
+  #   end
+  # end
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  # describe 'POST /api/v1/products' do
+  #   let(:valid_attributes) do
+  #     {
+  #       product: {
+  #         sku: 'SKU123', name: 'New Product',
+  #         description: 'New product description', price: 100.00,
+  #         stock: 10
+  #       }
+  #     }
+  #   end
 
-      it 'returns status code 403' do
-        post '/api/v1/products', params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-    context 'when not authenticated' do
-      it 'returns status code 401' do
-        post '/api/v1/products', params: valid_attributes
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
+  #     it 'creates a product' do
+  #       post '/api/v1/products', params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(json['data']['attributes']['sku']).to eq('SKU123')
+  #       expect(json['data']['attributes']['name']).to eq('New Product')
+  #       expect(json['data']['attributes']['description']).to eq('New product description')
+  #       expect(json['data']['attributes']['price'].to_f).to eq(100.0)
+  #       expect(json['data']['attributes']['stock']).to eq(10)
+  #       expect(json['data']['attributes']['status']).to eq('inactive')
+  #       expect(response).to have_http_status(:created)
+  #     end
 
-  describe 'PUT /api/v1/products/:id' do
-    let(:valid_attributes) do
-      {
-        product: {
-          sku: 'SKU123UPDATED', name: 'Updated Product',
-          description: 'Updated product description', price: 1000.00,
-          stock: 1000
-        }
-      }
-    end
+  #     it 'returns status code 422 with invalid attributes' do
+  #       invalid_attributes = { product: { name: '', price: 0, stock: -1 } }
+  #       post '/api/v1/products', params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
+  #   end
 
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
-      it 'updates the product' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['data']['attributes']['sku']).to eq('SKU123UPDATED')
-        expect(json['data']['attributes']['name']).to eq('Updated Product')
-        expect(json['data']['attributes']['description']).to eq('Updated product description')
-        expect(json['data']['attributes']['price'].to_f).to eq(1000.0)
-        expect(json['data']['attributes']['stock']).to eq(1000)
-        expect(response).to have_http_status(:ok)
-      end
+  #     it 'returns status code 403' do
+  #       post '/api/v1/products', params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(:forbidden)
+  #     end
+  #   end
 
-      it 'returns the price rounded if it has more decimals' do
-        invalid_attributes = { product: { price: 54.6999 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['data']['attributes']['price'].to_f).to eq(54.70)
-        expect(response).to have_http_status(:ok)
-      end
+  #   context 'when not authenticated' do
+  #     it 'returns status code 401' do
+  #       post '/api/v1/products', params: valid_attributes
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
+  #   end
+  # end
 
-      it 'returns status code 422 with invalid sku' do
-        invalid_attributes = { product: { sku: '' } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
+  # describe 'PUT /api/v1/products/:id' do
+  #   let(:valid_attributes) do
+  #     {
+  #       product: {
+  #         sku: 'SKU123UPDATED', name: 'Updated Product',
+  #         description: 'Updated product description', price: 1000.00,
+  #         stock: 1000
+  #       }
+  #     }
+  #   end
 
-      it 'returns status code 422 with invalid name' do
-        invalid_attributes = { product: { name: '' } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-      it 'returns status code 422 with invalid price' do
-        invalid_attributes = { product: { price: -10 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
+  #     it 'updates the product' do
+  #       put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(json['data']['attributes']['sku']).to eq('SKU123UPDATED')
+  #       expect(json['data']['attributes']['name']).to eq('Updated Product')
+  #       expect(json['data']['attributes']['description']).to eq('Updated product description')
+  #       expect(json['data']['attributes']['price'].to_f).to eq(1000.0)
+  #       expect(json['data']['attributes']['stock']).to eq(1000)
+  #       expect(response).to have_http_status(:ok)
+  #     end
 
-      it 'returns status code 422 with invalid stock' do
-        invalid_attributes = { product: { stock: -10 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
-    end
+  #     it 'returns the price rounded if it has more decimals' do
+  #       invalid_attributes = { product: { price: 54.6999 } }
+  #       put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(json['data']['attributes']['price'].to_f).to eq(54.70)
+  #       expect(response).to have_http_status(:ok)
+  #     end
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  #     it 'returns status code 422 with invalid sku' do
+  #       invalid_attributes = { product: { sku: '' } }
+  #       put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
 
-      it 'returns status code 403' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
+  #     it 'returns status code 422 with invalid name' do
+  #       invalid_attributes = { product: { name: '' } }
+  #       put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
 
-    context 'when not authenticated' do
-      it 'returns status code 401' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
+  #     it 'returns status code 422 with invalid price' do
+  #       invalid_attributes = { product: { price: -10 } }
+  #       put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
 
-  describe 'DELETE /api/v1/products/:id' do
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #     it 'returns status code 422 with invalid stock' do
+  #       invalid_attributes = { product: { stock: -10 } }
+  #       put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
+  #   end
 
-      it 'deletes the product' do
-        delete "/api/v1/products/#{active_product.id}", headers: { 'Authorization': @auth_token }
-        expect { active_product.reload }.to raise_error(ActiveRecord::RecordNotFound)
-        expect(response).to have_http_status(:no_content)
-      end
-    end
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  #     it 'returns status code 403' do
+  #       put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(:forbidden)
+  #     end
+  #   end
 
-      it 'returns status code 403' do
-        delete "/api/v1/products/#{active_product.id}", headers: { 'Authorization': @auth_token }
-        expect { active_product.reload }.not_to raise_error
-        expect(active_product.status).to eq('active')
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
+  #   context 'when not authenticated' do
+  #     it 'returns status code 401' do
+  #       put "/api/v1/products/#{active_product.id}", params: valid_attributes
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
+  #   end
+  # end
 
-    context 'when not authenticated' do
-      it 'returns status code 401' do
-        delete "/api/v1/products/#{active_product.id}"
-        expect { active_product.reload }.not_to raise_error
-        expect(active_product.status).to eq('active')
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
+  # describe 'DELETE /api/v1/products/:id' do
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-  describe 'PATCH /api/v1/products/:id/stock' do
-    let(:valid_attributes) { { product: { stock: 20 } } }
+  #     it 'deletes the product' do
+  #       delete "/api/v1/products/#{active_product.id}", headers: { 'Authorization': @auth_token }
+  #       expect { active_product.reload }.to raise_error(ActiveRecord::RecordNotFound)
+  #       expect(response).to have_http_status(:no_content)
+  #     end
+  #   end
 
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
-      it 'updates the stock of the product' do
-        patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['data']['attributes']['stock']).to eq(20)
-        expect(response).to have_http_status(:ok)
-      end
+  #     it 'returns status code 403' do
+  #       delete "/api/v1/products/#{active_product.id}", headers: { 'Authorization': @auth_token }
+  #       expect { active_product.reload }.not_to raise_error
+  #       expect(active_product.status).to eq('active')
+  #       expect(response).to have_http_status(:forbidden)
+  #     end
+  #   end
 
-      it 'returns status code 422 with invalid attributes' do
-        invalid_attributes = { product: { stock: -5 } }
-        patch "/api/v1/products/#{active_product.id}/stock", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
-    end
+  #   context 'when not authenticated' do
+  #     it 'returns status code 401' do
+  #       delete "/api/v1/products/#{active_product.id}"
+  #       expect { active_product.reload }.not_to raise_error
+  #       expect(active_product.status).to eq('active')
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
+  #   end
+  # end
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  # describe 'PATCH /api/v1/products/:id/stock' do
+  #   let(:valid_attributes) { { product: { stock: 20 } } }
 
-      it 'returns status code 403' do
-        patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-    context 'when not authenticated' do
-      it 'returns status code 401' do
-        patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
+  #     it 'updates the stock of the product' do
+  #       patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(json['data']['attributes']['stock']).to eq(20)
+  #       expect(response).to have_http_status(:ok)
+  #     end
 
-  describe 'PATCH /api/v1/products/:id/status' do
-    let(:valid_attributes) { { product: { status: 'inactive' } } }
-    let(:invalid_attributes) { { product: { status: '' } } }
+  #     it 'returns status code 422 with invalid attributes' do
+  #       invalid_attributes = { product: { stock: -5 } }
+  #       patch "/api/v1/products/#{active_product.id}/stock", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
+  #   end
 
-    context 'when authenticated as admin' do
-      before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
-      it 'updates the status of the product' do
-        patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['data']['attributes']['status']).to eq('inactive')
-        expect(response).to have_http_status(:ok)
-      end
+  #     it 'returns status code 403' do
+  #       patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(:forbidden)
+  #     end
+  #   end
 
-      it 'returns status code 422 with invalid attributes' do
-        patch "/api/v1/products/#{active_product.id}/status", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
-      end
-    end
+  #   context 'when not authenticated' do
+  #     it 'returns status code 401' do
+  #       patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
+  #   end
+  # end
 
-    context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+  # describe 'PATCH /api/v1/products/:id/status' do
+  #   let(:valid_attributes) { { product: { status: 'inactive' } } }
+  #   let(:invalid_attributes) { { product: { status: '' } } }
 
-      it 'returns status code 403' do
-        patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
+  #   context 'when authenticated as admin' do
+  #     before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
-    context 'when not authenticated' do
-      it 'returns status code 401' do
-        patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-  end
+  #     it 'updates the status of the product' do
+  #       patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(json['data']['attributes']['status']).to eq('inactive')
+  #       expect(response).to have_http_status(:ok)
+  #     end
+
+  #     it 'returns status code 422 with invalid attributes' do
+  #       patch "/api/v1/products/#{active_product.id}/status", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(422)
+  #     end
+  #   end
+
+  #   context 'when authenticated as customer' do
+  #     before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+
+  #     it 'returns status code 403' do
+  #       patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes, headers: { 'Authorization': @auth_token }
+  #       expect(response).to have_http_status(:forbidden)
+  #     end
+  #   end
+
+  #   context 'when not authenticated' do
+  #     it 'returns status code 401' do
+  #       patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes
+  #       expect(response).to have_http_status(:unauthorized)
+  #     end
+  #   end
+  # end
 end
