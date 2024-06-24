@@ -62,7 +62,6 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       it 'creates an order item if order is pending' do
         order.update(status: 'pending')
         post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
-        p json
         expect(json['data']['relationships']['order']['data']['id'].to_i).to eq(order.id)
         expect(json['data']['relationships']['product']['data']['id'].to_i).to eq(product.id)
         expect(response).to have_http_status(:created)

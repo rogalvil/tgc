@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :order do
-    total_price { 100.0 }
+    total_price { 200.0 }
     status { 'pending' }
     association :user
   end

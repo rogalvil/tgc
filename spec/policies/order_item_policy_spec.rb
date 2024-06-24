@@ -15,7 +15,7 @@ RSpec.describe OrderItemPolicy, type: :policy do
       context 'but order' do
         context 'is pending' do
           before { record.order.status = 'pending' }
-          failed 'denies access'
+          succeed 'allows access'
         end
         context 'is paid' do
           before { record.order.status = 'paid' }
