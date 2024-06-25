@@ -7,7 +7,108 @@ module Api
     # OrderItems controller
     class OrderItemsController < ApplicationController
       before_action :order
-      before_action :order_item, only: %i[update destroy]
+      # before_action :orders
+      before_action :order_item, only: %i[show update destroy]
+
+      api :GET, '/api/v1/orders/:order_id/items', 'Retrieve all items for a specific order'
+      description <<-DESC
+        Retrieves all items for a specific order.
+        - Only the owner of the order or an admin can view the items.
+      DESC
+      param :order_id, :number, desc: 'ID of the order', required: true
+      example <<-EXAMPLE
+      {
+        "data": [
+          {
+            "id": "1",
+            "type": "order_item",
+            "attributes": {
+              "quantity": 2,
+              "price": 50.0
+            },
+            "relationships": {
+              "order": {
+                "data": {
+                  "id": "1",
+                  "type": "order"
+                }
+              },
+              "product": {
+                "data": {
+                  "id": "1",
+                  "type": "product"
+                }
+              }
+            }
+          },
+          {
+            "id": "2",
+            "type": "order_item",
+            "attributes": {
+              "quantity": 1,
+              "price": 30.0
+            },
+            "relationships": {
+              "order": {
+                "data": {
+                  "id": "1",
+                  "type": "order"
+                }
+              },
+              "product": {
+                "data": {
+                  "id": "2",
+                  "type": "product"
+                }
+              }
+            }
+          }
+        ]
+      }
+      EXAMPLE
+      def index
+        @order_items = @order.order_items
+        authorize! @order_items, to: :read?
+        render json: serializer(@order_items), status: :ok
+      end
+
+      api :GET, '/api/v1/orders/:order_id/items/:id', 'Retrieve a specific item for a specific order'
+      description <<-DESC
+        Retrieves a specific item for a specific order.
+        - Only the owner of the order or an admin can view the item.
+      DESC
+      param :order_id, :number, desc: 'ID of the order', required: true
+      param :id, :number, desc: 'ID of the order item', required: true
+      example <<-EXAMPLE
+      {
+        "data": {
+          "id": "1",
+          "type": "order_item",
+          "attributes": {
+            "quantity": 2,
+            "price": 50.0
+          },
+          "relationships": {
+            "order": {
+              "data": {
+                "id": "1",
+                "type": "order"
+              }
+            },
+            "product": {
+              "data": {
+                "id": "1",
+                "type": "product"
+              }
+            }
+          }
+        }
+      }
+      EXAMPLE
+      def show
+        authorize! @order_item, to: :read?
+        render json: serializer(@order_item), status: :ok
+      end
 
       api :POST, '/api/v1/orders/:order_id/items', 'Create a new order item'
       description <<-DESC
@@ -101,7 +202,7 @@ module Api
         end
       end
 
-      api :DELETE, '/v1/orders/:order_id/items/:id', 'Delete an order item'
+      api :DELETE, '/api/v1/orders/:order_id/items/:id', 'Delete an order item'
       description <<-DESC
         Deletes an order item.
         - Only the owner of the order or an admin can delete an item.

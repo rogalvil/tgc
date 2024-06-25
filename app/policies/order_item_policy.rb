@@ -10,11 +10,11 @@ class OrderItemPolicy < ApplicationPolicy
   }.freeze
 
   def read?
-    admin? || owner?
+    admin? || customer?
   end
 
   def edit?
-    (admin? || owner?) && record.order.pending?
+    (admin? || customer?) && record.order.pending?
   end
 
   relation_scope do |scope|
@@ -28,6 +28,6 @@ class OrderItemPolicy < ApplicationPolicy
   private
 
   def owner?
-    user.id == record.order.user_id && customer?
+    customer? && (user.id == record.order.user_id?)
   end
 end

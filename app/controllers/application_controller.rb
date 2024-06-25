@@ -10,15 +10,20 @@ class ApplicationController < ActionController::API
   rescue_from ActionPolicy::Unauthorized do |ex|
     error_message = ex.policy::ERROR_MESSAGES[ex.rule.to_sym] ||
                     'You not allowed to perform this action'
-    render json: { message: error_message }, status: :forbidden
+    render json: { messages: [error_message] }, status: :forbidden
   end
 
   rescue_from Apipie::ParamMissing do |ex|
-    render json: { message: ex.message }, status: :bad_request
+    render json: { messages: [ex.message] }, status: :bad_request
+  end
+
+  rescue_from Apipie::ParamInvalid do |ex|
+    # debugger
+    render json: { messages: ["Invalid parameter #{ex.param}"] }, status: :bad_request
   end
 
   rescue_from ActiveRecord::RecordNotFound do
-    render json: { message: 'Record not found' }, status: :not_found
+    render json: { messages: ['Record not found'] }, status: :not_found
   end
 
   rescue_from ActionController::RoutingError, with: :render_not_found
