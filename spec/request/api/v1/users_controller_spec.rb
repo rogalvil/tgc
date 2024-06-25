@@ -52,6 +52,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         get '/api/v1/users'
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -146,6 +147,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         put "/api/v1/users/#{customer.id}", params: valid_attributes
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end

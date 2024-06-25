@@ -22,6 +22,7 @@ RSpec.describe Users::SessionsController, type: :request do
       before { login_with_api(email: user.email, password: nil) }
 
       it 'returns 401 status' do
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end

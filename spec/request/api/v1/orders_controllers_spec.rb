@@ -47,6 +47,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         get '/api/v1/orders'
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -91,6 +92,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         get "/api/v1/orders/#{order.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -123,6 +125,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         post '/api/v1/orders'
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -174,6 +177,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         delete "/api/v1/orders/#{order.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -190,7 +194,6 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'updates the order status' do
         patch "/api/v1/orders/#{order.id}/status", params: valid_status, headers: { 'Authorization': @auth_token }
-        p json
         expect(response).to have_http_status(:ok)
         expect(order.reload.status).to eq('paid')
       end
@@ -234,6 +237,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         patch "/api/v1/orders/#{order.id}/status", params: valid_status
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end

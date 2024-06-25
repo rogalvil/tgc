@@ -47,6 +47,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns unauthorized' do
         get "/api/v1/orders/#{order.id}/items"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -93,6 +94,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns unauthorized' do
         get "/api/v1/orders/#{order.id}/items/#{order_item.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -192,6 +194,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         post "/api/v1/orders/#{order.id}/items", params: valid_params
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -292,6 +295,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -386,6 +390,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         delete "/api/v1/orders/#{order.id}/items/#{order_item.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
