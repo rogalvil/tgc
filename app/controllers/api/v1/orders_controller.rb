@@ -162,7 +162,9 @@ module Api
         - Only admins can update the status of an order.
       DESC
       param :id, :number, desc: 'ID of the order', required: true
-      param :status, String, desc: 'New status for the order', required: true
+      param :order, Hash, desc: 'Order object', required: true do
+        param :status, String, desc: 'New status for the order', required: true
+      end
       example <<-EXAMPLE
       {
         "data": {
