@@ -7,14 +7,21 @@ class UserPolicy < ApplicationPolicy
     show?: 'You are not allowed to view this user\'s information'
   }.freeze
 
-  def show?
-    admin? || (record.customer? && (guest? || customer?))
+  alias_rule :index?, :create?, :destroy?, to: :manage?
+  alias_rule :show?, :update?, to: :edit?
+
+  def manage?
+    admin?
+  end
+
+  def edit?
+    admin? || owner?
   end
 
   relation_scope do |relation|
     next relation if user.admin?
 
-    relation.where(role: 'customer')
+    relation.where(id: user.id)
   end
 
   private

@@ -116,7 +116,7 @@ module Api
       EXAMPLE
       def create
         @product = Product.new(product_params)
-        authorize! @product, to: :edit?
+        authorize! @product, to: :create?
         if @product.save
           render json: serializer(@product), status: :created
         else
@@ -154,7 +154,7 @@ module Api
       }
       EXAMPLE
       def update
-        authorize! @product, to: :edit?
+        authorize! @product, to: :update?
         if @product.update(product_params)
           render json: serializer(@product), status: :ok
         else
@@ -173,7 +173,7 @@ module Api
       }
       EXAMPLE
       def destroy
-        authorize! @product, to: :edit?
+        authorize! @product, to: :destroy?
         @product.destroy
         head :no_content
       end
@@ -204,7 +204,7 @@ module Api
       }
       EXAMPLE
       def update_stock
-        authorize! @product, to: :edit?
+        authorize! @product, to: :update_stock?
         if @product.update(stock_params)
           render json: serializer(@product), status: :ok
         else
@@ -238,7 +238,7 @@ module Api
       }
       EXAMPLE
       def update_status
-        authorize! @product, to: :edit?
+        authorize! @product, to: :update_status?
         if @product.update(status_params)
           render json: serializer(@product), status: :ok
         else
