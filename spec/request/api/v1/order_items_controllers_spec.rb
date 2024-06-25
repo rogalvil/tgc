@@ -240,7 +240,6 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       it 'returns bad request entity with invalid params' do
         order.update(status: 'pending')
         patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: invalid_params, headers: { 'Authorization': @auth_token }
-        p json
         expect(json['messages']).to include('Invalid parameter quantity')
         expect(response).to have_http_status(:bad_request)
       end

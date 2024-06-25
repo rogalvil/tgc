@@ -93,7 +93,7 @@ module Api
       param :product, Hash, desc: 'Product information', required: true do
         param :sku, String, desc: 'SKU of the product', required: true
         param :name, String, desc: 'Name of the product', required: true
-        param :price, :number, desc: 'Price of the product', required: true
+        param :price, :decimal, desc: 'Price of the product', required: true
         param :stock, :number, desc: 'Stock of the product', required: true
         param :description, String, desc: 'Description of the product', required: false
       end
@@ -133,7 +133,7 @@ module Api
         param :sku, String, desc: 'SKU of the product', required: false
         param :name, String, desc: 'Name of the product', required: false
         param :description, String, desc: 'Description of the product', required: false
-        param :price, :number, desc: 'Price of the product', required: false
+        param :price, :decimal, desc: 'Price of the product', required: false
         param :stock, :number, desc: 'Stock of the product', required: false
       end
       example <<-EXAMPLE
@@ -183,7 +183,9 @@ module Api
         Updates the stock of a product. Only admins can update the stock.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
-      param :stock, :number, desc: 'New stock of the product', required: true
+      param :product, Hash, desc: 'Product information', required: true do
+        param :stock, :number, desc: 'New stock of the product', required: true
+      end
       example <<-EXAMPLE
       {
         "data": {
@@ -215,7 +217,9 @@ module Api
         Updates the status of a product. Only admins can update the status.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
-      param :status, String, desc: 'New status of the product', required: true
+      param :product, Hash, desc: 'Product information', required: true do
+        param :status, String, desc: 'New status of the product', required: true
+      end
       example <<-EXAMPLE
       {
         "data": {
