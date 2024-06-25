@@ -17,12 +17,12 @@ RSpec.describe UserPolicy, type: :policy do
 
     context 'when customer' do
       before { user.role = 'customer' }
-      succeed 'allows access'
+      failed 'denies access'
     end
 
     context 'when guest' do
       before { user.role = 'guest' }
-      succeed 'allows access'
+      failed 'denies access'
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe UserPolicy, type: :policy do
 
     context 'when customer' do
       context 'viewing other customer' do
-        succeed 'allows access'
+        failed 'denies access'
       end
       context 'viewing admin' do
         before { record.role = 'admin' }
@@ -59,12 +59,29 @@ RSpec.describe UserPolicy, type: :policy do
     context 'when guest' do
       before { user.role = 'guest' }
       context 'viewing customer' do
-        succeed 'allows access'
+        failed 'denies access'
       end
       context 'viewing admin' do
         before { record.role = 'admin' }
         failed 'denies access'
       end
+    end
+  end
+
+  describe_rule :create? do
+    context 'when admin' do
+      before { user.role = 'admin' }
+      succeed 'allows access'
+    end
+
+    context 'when customer' do
+      before { user.role = 'customer' }
+      failed 'denies access'
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 
@@ -74,7 +91,12 @@ RSpec.describe UserPolicy, type: :policy do
       context 'updating customer' do
         succeed 'allows access'
       end
+      context 'updating admin' do
+        before { record.role = 'admin' }
+        succeed 'allows access'
+      end
     end
+
     context 'when customer' do
       context 'updating another customer' do
         failed 'denies access'
@@ -98,6 +120,23 @@ RSpec.describe UserPolicy, type: :policy do
         before { record.role = 'admin' }
         failed 'denies access'
       end
+    end
+  end
+
+  describe_rule :destroy? do
+    context 'when admin' do
+      before { user.role = 'admin' }
+      succeed 'allows access'
+    end
+
+    context 'when customer' do
+      before { user.role = 'customer' }
+      failed 'denies access'
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
     end
   end
 end

@@ -47,6 +47,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         get '/api/v1/orders'
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -91,6 +92,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         get "/api/v1/orders/#{order.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -123,6 +125,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         post '/api/v1/orders'
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -174,6 +177,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         delete "/api/v1/orders/#{order.id}"
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -194,11 +198,10 @@ RSpec.describe Api::V1::OrdersController, type: :request do
         expect(order.reload.status).to eq('paid')
       end
 
-      it 'returns 422 with invalid status' do
+      it 'returns code bad request with invalid status' do
         patch "/api/v1/orders/#{order.id}/status", params: invalid_status, headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include("Status can't be blank")
-        expect(json['messages']).to include('Status is not included in the list')
-        expect(response).to have_http_status(422)
+        expect(json['messages']).to include('Invalid parameter status')
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -213,11 +216,10 @@ RSpec.describe Api::V1::OrdersController, type: :request do
         expect(order.reload.status).to eq('paid')
       end
 
-      it 'returns 422 with invalid status' do
+      it 'returns code bad request with invalid status' do
         patch "/api/v1/orders/#{order.id}/status", params: invalid_status, headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include("Status can't be blank")
-        expect(json['messages']).to include('Status is not included in the list')
-        expect(response).to have_http_status(422)
+        expect(json['messages']).to include('Invalid parameter status')
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -235,6 +237,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         patch "/api/v1/orders/#{order.id}/status", params: valid_status
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end

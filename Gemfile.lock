@@ -79,6 +79,9 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
+    apipie-rails (1.4.0)
+      actionpack (>= 5.0)
+      activesupport (>= 5.0)
     ast (2.4.2)
     backport (1.2.0)
     base64 (0.2.0)
@@ -336,6 +339,7 @@ PLATFORMS
 
 DEPENDENCIES
   action_policy (~> 0.6.9)
+  apipie-rails
   bootsnap
   debug
   devise (~> 4.9, >= 4.9.4)

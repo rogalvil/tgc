@@ -2,20 +2,21 @@
 
 # Routes for the API
 Rails.application.routes.draw do
+  apipie
   namespace :api do
     namespace :v1 do
-      resources :users, only: %i[index show update]
+      resources :users
       resources :products do
         member do
           patch :stock, to: 'products#update_stock'
           patch :status, to: 'products#update_status'
         end
       end
-      resources :orders, only: %i[index show create destroy status] do
+      resources :orders do
         member do
           patch :status, to: 'orders#update_status'
         end
-        resources :order_items, path: :items, only: %i[create update destroy]
+        resources :order_items, path: :items
       end
     end
   end

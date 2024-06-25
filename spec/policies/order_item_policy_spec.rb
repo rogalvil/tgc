@@ -9,6 +9,44 @@ RSpec.describe OrderItemPolicy, type: :policy do
   let(:context) { { user: } }
   let(:other_customer) { build_stubbed(:user) }
 
+  describe_rule :index? do
+    context 'when admin' do
+      before { user.role = 'admin' }
+      succeed 'allows access'
+    end
+
+    context 'when customer' do
+      succeed 'allows access'
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
+    end
+  end
+
+  describe_rule :show? do
+    context 'when admin' do
+      before { user.role = 'admin' }
+      succeed 'allows access'
+    end
+
+    context 'when customer is the owner of the order' do
+      before { record.order.user = user }
+      succeed 'allows access'
+    end
+
+    context 'when customer but not the owner of the order' do
+      before { record.order.user = other_customer }
+      succeed 'allows access'
+    end
+
+    context 'when guest' do
+      before { user.role = 'guest' }
+      failed 'denies access'
+    end
+  end
+
   describe_rule :create? do
     context 'when admin' do
       before { user.role = 'admin' }
@@ -67,7 +105,7 @@ RSpec.describe OrderItemPolicy, type: :policy do
         context 'and order' do
           context 'is pending' do
             before { record.order.status = 'pending' }
-            failed 'denies access'
+            succeed 'allows access'
           end
           context 'is paid' do
             before { record.order.status = 'paid' }
@@ -148,7 +186,7 @@ RSpec.describe OrderItemPolicy, type: :policy do
         context 'and order' do
           context 'is pending' do
             before { record.order.status = 'pending' }
-            failed 'denies access'
+            succeed 'allows access'
           end
           context 'is paid' do
             before { record.order.status = 'paid' }
@@ -229,7 +267,7 @@ RSpec.describe OrderItemPolicy, type: :policy do
         context 'and order' do
           context 'is pending' do
             before { record.order.status = 'pending' }
-            failed 'denies access'
+            succeed 'allows access'
           end
           context 'is paid' do
             before { record.order.status = 'paid' }

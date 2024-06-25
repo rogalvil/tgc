@@ -187,10 +187,10 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:created)
       end
 
-      it 'returns status code 422 with invalid attributes' do
+      it 'returns status code bad request with invalid attributes' do
         invalid_attributes = { product: { name: '', price: 0, stock: -1 } }
         post '/api/v1/products', params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -206,6 +206,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         post '/api/v1/products', params: valid_attributes
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -242,28 +243,35 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status code 422 with invalid sku' do
+      it 'returns status code bad request with invalid sku' do
         invalid_attributes = { product: { sku: '' } }
         put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
       end
 
-      it 'returns status code 422 with invalid name' do
+      it 'returns status code bad request with invalid name' do
         invalid_attributes = { product: { name: '' } }
         put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
       end
 
-      it 'returns status code 422 with invalid price' do
-        invalid_attributes = { product: { price: -10 } }
+      it 'returns status code bad request with invalid price' do
+        invalid_attributes = { product: { price: 'a' } }
         put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns status code unprocessable with negative price' do
+        invalid_attributes = { product: { price: -1000 } }
+        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Price must be greater than or equal to 0')
         expect(response).to have_http_status(422)
       end
 
-      it 'returns status code 422 with invalid stock' do
+      it 'returns status code bad request with invalid stock' do
         invalid_attributes = { product: { stock: -10 } }
         put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -279,6 +287,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         put "/api/v1/products/#{active_product.id}", params: valid_attributes
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -311,6 +320,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         delete "/api/v1/products/#{active_product.id}"
         expect { active_product.reload }.not_to raise_error
         expect(active_product.status).to eq('active')
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -328,10 +338,10 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status code 422 with invalid attributes' do
+      it 'returns status code bad request with invalid attributes' do
         invalid_attributes = { product: { stock: -5 } }
         patch "/api/v1/products/#{active_product.id}/stock", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
@@ -347,6 +357,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         patch "/api/v1/products/#{active_product.id}/stock", params: valid_attributes
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -365,17 +376,22 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status code 422 with invalid attributes' do
+      it 'returns status bad request status with invalid attributes' do
         patch "/api/v1/products/#{active_product.id}/status", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(422)
+        expect(json['messages']).to include('Invalid parameter status')
+        expect(response).to have_http_status(:bad_request)
       end
     end
 
     context 'when authenticated as customer' do
-      before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
+      before do
+        active_product
+        @auth_token = login_with_api(email: customer.email, password: customer.password)
+      end
 
-      it 'returns status code 403' do
+      it 'returns status code forbidden' do
         patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('You are not allowed to edit product')
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -383,6 +399,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     context 'when not authenticated' do
       it 'returns status code 401' do
         patch "/api/v1/products/#{active_product.id}/status", params: valid_attributes
+        expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
     end
