@@ -13,6 +13,10 @@ class ApplicationController < ActionController::API
     render json: { message: error_message }, status: :forbidden
   end
 
+  rescue_from Apipie::ParamMissing do |ex|
+    render json: { message: ex.message }, status: :bad_request
+  end
+
   rescue_from ActiveRecord::RecordNotFound do
     render json: { message: 'Record not found' }, status: :not_found
   end

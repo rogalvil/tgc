@@ -97,6 +97,9 @@ gem 'oj'
 # JSON APIs using object serialization
 gem 'jsonapi-serializer'
 
+# Rails REST API documentation tool
+gem 'apipie-rails'
+
 # Fix ambiguous gems on container
 gem 'drb', '2.2.0'
 gem 'minitest', '5.20.0'

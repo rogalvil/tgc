@@ -2,6 +2,7 @@
 
 # Routes for the API
 Rails.application.routes.draw do
+  apipie
   namespace :api do
     namespace :v1 do
       resources :users, only: %i[index show update]
