@@ -35,6 +35,8 @@ https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-cont
 
 You should see a prompt in the bottom right corner asking if you want to reopen the project in a container. Click "Reopen in Container".
 
+![Screenshot 2024-06-26 at 7 07 28 a m](https://github.com/rogalvil/tgc/assets/695923/666428ad-6cda-44a2-8650-da9e0b3659dd)
+
 If you don't see the prompt, you can open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS) and select "Remote-Containers: Reopen in Container".
 
 4. **Wait for the container to build and start:**
@@ -58,6 +60,16 @@ rails server -b 0.0.0.0
 ```
 
 or click on Run and Debug in the sidebar and select "Rails Server".
+
+![Screenshot 2024-06-26 at 7 08 06 a m](https://github.com/rogalvil/tgc/assets/695923/aea7dd1e-66bd-4873-8d95-22d65ec2edae)
+
+and then click on the green play button.
+
+![Screenshot 2024-06-26 at 7 08 48 a m](https://github.com/rogalvil/tgc/assets/695923/6811ac40-e241-4d66-a365-cdc85a09b0bd)
+
+then apper a controls to manage the server.
+
+![Screenshot 2024-06-26 at 7 09 00 a m](https://github.com/rogalvil/tgc/assets/695923/cca2d9f6-b6ee-49c4-8564-fba1564228ef)
 
 7. **Access the application:**
 
