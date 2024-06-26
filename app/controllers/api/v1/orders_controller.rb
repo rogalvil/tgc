@@ -9,7 +9,7 @@ module Api
       before_action :order, only: %i[show destroy update_status]
       before_action :orders, only: %i[index]
 
-      api :GET, '/api/v1/orders', 'Retrieve a list of orders'
+      api :GET, '/api/v1/orders', 'Retrieve all orders'
       description <<-DESC
         Returns a list of orders.
         - If authenticated as admin, can see all orders.
@@ -53,7 +53,7 @@ module Api
         render json: serializer(@orders), status: :ok
       end
 
-      api :GET, '/api/v1/orders/:id', 'Retrieve a specific order'
+      api :GET, '/api/v1/orders/:id', 'Retrieve an order'
       description <<-DESC
         Returns the details of a specific order.
         - If authenticated as admin, can see any order.

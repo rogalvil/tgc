@@ -9,7 +9,7 @@ module Api
       before_action :user, only: %i[show update destroy]
       before_action :users, only: %i[index]
 
-      api :GET, '/api/v1/users', 'List all users'
+      api :GET, '/api/v1/users', 'Retrieve all users'
       description <<-DESC
         Retrieves a list of all users. Only admins can access this endpoint.
       DESC
@@ -34,7 +34,7 @@ module Api
         render json: serializer(@users), status: :ok
       end
 
-      api :GET, '/api/v1/users/:id', 'Show a user'
+      api :GET, '/api/v1/users/:id', 'Retrieve a user'
       description <<-DESC
         Retrieves the details of a specific user. Only admins and the user themselves can access this endpoint.
       DESC
@@ -81,7 +81,7 @@ module Api
         end
       end
 
-      api :PUT, '/api/v1/users/:id', 'Update a user'
+      api :PATCH, '/api/v1/users/:id', 'Update a user'
       description <<-DESC
         Updates the details of a specific user. Only admins and the user themselves can update this endpoint.
       DESC

@@ -10,11 +10,11 @@ module Api
       before_action :products, only: %i[index]
       skip_before_action :authenticate_user!, only: %i[index show]
 
-      api :GET, '/v1/products', 'Retrieve products'
+      api :GET, '/api/v1/products', 'Retrieve all products'
       description <<-DESC
         Returns a list products.
         - If authenticated as admin, returns all products.
-        - If authenticated as customer, returns only active and preorder products.
+        - If authenticated as customer or guest, returns only active and preorder products.
         - Supports search by query parameter for product name or description.
       DESC
       param :query, String, desc: 'Search query for product name or description', required: false
@@ -61,7 +61,7 @@ module Api
       description <<-DESC
         Returns the details of a product.
         - If authenticated as admin, can see all products.
-        - If authenticated as customer, can see only active and preorder products.
+        - If authenticated as customer or guest, can see only active and preorder products.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
       example <<-EXAMPLE
@@ -124,7 +124,7 @@ module Api
         end
       end
 
-      api :PUT, '/api/v1/products/:id', 'Update a product'
+      api :PATCH, '/api/v1/products/:id', 'Update a product'
       description <<-DESC
         Updates a product. Only admins can update products.
       DESC
