@@ -10,9 +10,9 @@ module Api
       # before_action :orders
       before_action :order_item, only: %i[show update destroy]
 
-      api :GET, '/api/v1/orders/:order_id/items', 'Retrieve all items for a specific order'
+      api :GET, '/api/v1/orders/:order_id/items', 'Retrieve all items for an order'
       description <<-DESC
-        Retrieves all items for a specific order.
+        Retrieves all items for an order.
         - Only the owner of the order or an admin can view the items.
       DESC
       param :order_id, :number, desc: 'ID of the order', required: true
@@ -72,9 +72,9 @@ module Api
         render json: serializer(@order_items), status: :ok
       end
 
-      api :GET, '/api/v1/orders/:order_id/items/:id', 'Retrieve a specific item for a specific order'
+      api :GET, '/api/v1/orders/:order_id/items/:id', 'Retrieve an item for an order'
       description <<-DESC
-        Retrieves a specific item for a specific order.
+        Retrieves an item for an order.
         - Only the owner of the order or an admin can view the item.
       DESC
       param :order_id, :number, desc: 'ID of the order', required: true
