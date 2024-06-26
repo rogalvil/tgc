@@ -48,10 +48,16 @@ The first time you open the project in a container, it will build the Docker ima
 Once the container is up and running, open a new terminal in VS Code and run:
 
 ```
-rake db:create db:migrate
+rails db:create db:migrate
 ```
 
-6. **Start the Rails server:**
+6. Create master.key file, you can use the following command:
+
+```
+rails credentials:edit
+```
+
+7. **Start the Rails server:**
 
 In the terminal, run:
 
@@ -71,11 +77,11 @@ then apper a controls to manage the server.
 
 ![Screenshot 2024-06-26 at 7 09 00 a m](https://github.com/rogalvil/tgc/assets/695923/cca2d9f6-b6ee-49c4-8564-fba1564228ef)
 
-7. **Access the application:**
+8. **Access the application:**
 
 The application should now be running and accessible at `http://localhost:3000`.
 
-8. **Run tests:**
+9. **Run tests:**
 
 To run the test suite, use the following command in the terminal:
 
@@ -122,13 +128,27 @@ docker-compose up development
 Inside the containers in bash mode you need to migrate the database:
 
 ```
-rake db:create db:migrate
+rails db:create db:migrate
 ```
 
 Or once the containers are up and running, you need to create and migrate the database. Open a new terminal window and run:
 
 ```
-docker-compose exec development rake db:create db:migrate
+docker-compose exec development rails db:create db:migrate
+```
+
+7. Create master.key file, you can use the following command:
+
+Inside the containers in bash mode you need to migrate the database:
+
+```
+rails credentials:edit
+```
+
+Or once the containers are up and running, you need to create the master.key file. Open a new terminal window and run:
+
+```
+docker-compose exec development rails credentials:edit
 ```
 
 7. **Access the application:**
@@ -149,7 +169,7 @@ Or once the containers are up and running, you can run the tests using the follo
 docker-compose exec development rspec
 ```
 
-8. **Stop the containers:**
+9. **Stop the containers:**
 
 To stop the running containers, use:
 
