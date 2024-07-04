@@ -9,7 +9,6 @@ RSpec.describe Api::V1::OrdersController, type: :request do
   let(:guest) { create(:user, role: 'guest') }
   let(:order) { create(:order, user: customer) }
   let(:order_items) { create_list(:order_item, 3, order:) }
-  # let(:order_item) { create(:order_item, order:) }
   let(:order_item) { order_items.first }
   let(:other_order_item) { create(:order_item) }
   let(:all_order_items) { [order_item, other_order_item] }
@@ -23,7 +22,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'retrieves all order items' do
-        get "/api/v1/orders/#{order.id}/items", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items",
+            headers: { 'Authorization': @auth_token }
         expect(json['data'].size).to eq(3)
         expect(json['data'].map { |item| item['id'].to_i }).to match_array(order_items.pluck(:id))
         expect(response).to have_http_status(:ok)
@@ -37,7 +37,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'retrieves all order items' do
-        get "/api/v1/orders/#{order.id}/items", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items",
+            headers: { 'Authorization': @auth_token }
         expect(json['data'].size).to eq(3)
         expect(json['data'].map { |item| item['id'].to_i }).to match_array(order_items.pluck(:id))
         expect(response).to have_http_status(:ok)
@@ -59,7 +60,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'returns not found' do
-        get "/api/v1/orders/#{order.id}/items", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items",
+            headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -73,7 +75,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'retrieves the order item' do
-        get "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+            headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:ok)
         expect(json['data']['id'].to_i).to eq(order_item.id)
       end
@@ -85,7 +88,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'retrieves the order item' do
-        get "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+            headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:ok)
         expect(json['data']['id'].to_i).to eq(order_item.id)
       end
@@ -106,7 +110,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'returns not found' do
-        get "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        get "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+            headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -122,7 +127,9 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'creates an order item if order is pending' do
         order.update(status: 'pending')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(json['data']['relationships']['order']['data']['id'].to_i).to eq(order.id)
         expect(json['data']['relationships']['product']['data']['id'].to_i).to eq(product.id)
         expect(response).to have_http_status(:created)
@@ -130,25 +137,33 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -160,7 +175,9 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'creates an order item if order is pending' do
         order.update(status: 'pending')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(json['data']['relationships']['order']['data']['id'].to_i).to eq(order.id)
         expect(json['data']['relationships']['product']['data']['id'].to_i).to eq(product.id)
         expect(response).to have_http_status(:created)
@@ -168,25 +185,33 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        post "/api/v1/orders/#{order.id}/items", params: valid_params, headers: { 'Authorization': @auth_token }
+        post "/api/v1/orders/#{order.id}/items",
+             params: valid_params,
+             headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -211,40 +236,52 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'updates the order item if order is pending' do
         order.update(status: 'pending')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:ok)
         expect(order_item.reload.quantity).to eq(5)
       end
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
-      it 'returns bad request entity with invalid params' do
+      it 'returns unprocessable content entity with invalid params' do
         order.update(status: 'pending')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: invalid_params, headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include('Invalid parameter quantity')
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: invalid_params,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Quantity must be greater than 0')
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -255,46 +292,59 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'updates the order item if order is pending' do
         order.update(status: 'pending')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:ok)
         expect(order_item.reload.quantity).to eq(5)
       end
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
-      it 'returns bad request entity with invalid params' do
+      it 'returns unprocessable content entity with invalid params' do
         order.update(status: 'pending')
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: invalid_params, headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include('Invalid parameter quantity')
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: invalid_params,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Quantity must be greater than 0')
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
     context 'when not authenticated' do
       it 'returns status code 401' do
-        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}", params: valid_params
+        patch "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+              params: valid_params
         expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
@@ -309,32 +359,37 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'deletes the order item if order is pending' do
         order.update(status: 'pending')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:no_content)
         expect(OrderItem.exists?(order_item.id)).to be_falsey
       end
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -346,32 +401,37 @@ RSpec.describe Api::V1::OrdersController, type: :request do
 
       it 'deletes the order item if order is pending' do
         order.update(status: 'pending')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:no_content)
         expect(OrderItem.exists?(order_item.id)).to be_falsey
       end
 
       it 'returns forbidden if order is paid' do
         order.update(status: 'paid')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is shipped' do
         order.update(status: 'shipped')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is delivered' do
         order.update(status: 'delivered')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'returns forbidden if order is cancelled' do
         order.update(status: 'cancelled')
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -382,7 +442,8 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       end
 
       it 'returns not found' do
-        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}", headers: { 'Authorization': @auth_token }
+        delete "/api/v1/orders/#{order.id}/items/#{order_item.id}",
+               headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:not_found)
       end
     end

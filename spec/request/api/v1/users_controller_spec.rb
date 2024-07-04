@@ -34,7 +34,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
 
       it 'returns status code forbidden' do
         get '/api/v1/users', headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include('You not allowed to perform this action')
+        expect(json['messages']).to include('You are not allowed to perform this action')
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -144,20 +144,24 @@ RSpec.describe Api::V1::UsersController, type: :request do
     end
   end
 
-  describe 'PUT /api/v1/users/:id' do
+  describe 'PATCH /api/v1/users/:id' do
     let(:valid_attributes) { { user: { name: 'New Name' } } }
 
     context 'when authenticated as admin' do
       before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
       it 'updates the admin user' do
-        put "/api/v1/users/#{admin.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/users/#{admin.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['data']['attributes']['name']).to eq('New Name')
         expect(response).to have_http_status(:ok)
       end
 
       it 'updates a customer user' do
-        put "/api/v1/users/#{customer.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/users/#{customer.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['data']['attributes']['name']).to eq('New Name')
         expect(response).to have_http_status(:ok)
       end
@@ -167,26 +171,32 @@ RSpec.describe Api::V1::UsersController, type: :request do
       before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
       it 'updates themselves' do
-        put "/api/v1/users/#{customer.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/users/#{customer.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['data']['attributes']['name']).to eq('New Name')
         expect(response).to have_http_status(:ok)
       end
 
       it 'returns status code not found for updating an admin user' do
-        put "/api/v1/users/#{admin.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/users/#{admin.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:not_found)
       end
 
       it 'returns status code not found for updating another customer user' do
         other_customer = create(:user, :customer)
-        put "/api/v1/users/#{other_customer.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/users/#{other_customer.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:not_found)
       end
     end
 
     context 'when not authenticated' do
       it 'returns status code unauthorized' do
-        put "/api/v1/users/#{customer.id}", params: valid_attributes
+        patch "/api/v1/users/#{customer.id}", params: valid_attributes
         expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
