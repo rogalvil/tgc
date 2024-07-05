@@ -8,7 +8,7 @@ module Api
     module UsersControllerDoc
       extend Apipie::DSL::Concern
 
-      api :GET, '/api/v1/users', 'Retrieve all users'
+      api :GET, '/users', 'Retrieve all users'
       description <<-DESC
         Retrieves a list of all users. Only admins can access this endpoint.
       DESC
@@ -32,7 +32,7 @@ module Api
       EXAMPLE
       def index; end
 
-      api :GET, '/api/v1/users/:id', 'Retrieve a user'
+      api :GET, '/users/:id', 'Retrieve a user'
       description <<-DESC
         Retrieves the details of a specific user. Only admins and the user themselves can access this endpoint.
       DESC
@@ -49,7 +49,7 @@ module Api
       EXAMPLE
       def show; end
 
-      api :POST, '/api/v1/users', 'Create a new user'
+      api :POST, '/users', 'Create a new user'
       description <<-DESC
         Creates a new user. Only admins can create users.
       DESC
@@ -70,7 +70,7 @@ module Api
       EXAMPLE
       def create; end
 
-      api :PATCH, '/api/v1/users/:id', 'Update a user'
+      api :PATCH, '/users/:id', 'Update a user'
       description <<-DESC
         Updates the details of a specific user. Only admins and the user themselves can update this endpoint.
       DESC
@@ -93,7 +93,7 @@ module Api
       EXAMPLE
       def update; end
 
-      api :DELETE, '/api/v1/users/:id', 'Delete a user'
+      api :DELETE, '/users/:id', 'Delete a user'
       description <<-DESC
         Deletes a specific user. Only admins can delete users.
       DESC

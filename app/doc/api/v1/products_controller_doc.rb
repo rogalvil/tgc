@@ -8,7 +8,7 @@ module Api
     module ProductsControllerDoc
       extend Apipie::DSL::Concern
 
-      api :GET, '/api/v1/products', 'Retrieve all products'
+      api :GET, '/products', 'Retrieve all products'
       description <<-DESC
         Returns a list products.
         - If authenticated as admin, returns all products.
@@ -50,7 +50,7 @@ module Api
       EXAMPLE
       def index; end
 
-      api :GET, '/api/v1/products/:id', 'Retrieve a product'
+      api :GET, '/products/:id', 'Retrieve a product'
       description <<-DESC
         Returns the details of a product.
         - If authenticated as admin, can see all products.
@@ -76,7 +76,7 @@ module Api
       EXAMPLE
       def show; end
 
-      api :POST, '/api/v1/products', 'Create a new product'
+      api :POST, '/products', 'Create a new product'
       description <<-DESC
         Creates a new product. Only admins can create products.
       DESC
@@ -106,7 +106,7 @@ module Api
       EXAMPLE
       def create; end
 
-      api :PATCH, '/api/v1/products/:id', 'Update a product'
+      api :PATCH, '/products/:id', 'Update a product'
       description <<-DESC
         Updates a product. Only admins can update products.
       DESC
@@ -137,14 +137,14 @@ module Api
       EXAMPLE
       def update; end
 
-      api :DELETE, '/api/v1/products/:id', 'Delete a product'
+      api :DELETE, '/products/:id', 'Delete a product'
       description <<-DESC
         Deletes a product. Only admins can delete products.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
       def destroy; end
 
-      api :PATCH, '/api/v1/products/:id/stock', 'Update the stock of a product'
+      api :PATCH, '/products/:id/stock', 'Update the stock of a product'
       description <<-DESC
         Updates the stock of a product. Only admins can update the stock.
       DESC
@@ -171,7 +171,7 @@ module Api
       EXAMPLE
       def update_stock; end
 
-      api :PATCH, '/api/v1/products/:id/status', 'Update the status of a product'
+      api :PATCH, '/products/:id/status', 'Update the status of a product'
       description <<-DESC
         Updates the status of a product. Only admins can update the status.
       DESC

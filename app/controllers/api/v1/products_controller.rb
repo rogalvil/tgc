@@ -29,7 +29,7 @@ module Api
         if @product.save
           render json: serializer(@product), status: :created
         else
-          render json: { messages: @product.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@product.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 
@@ -38,7 +38,7 @@ module Api
         if @product.update(product_params)
           render json: serializer(@product), status: :ok
         else
-          render json: { messages: @product.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@product.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 
@@ -53,7 +53,7 @@ module Api
         if @product.update(stock_params)
           render json: serializer(@product), status: :ok
         else
-          render json: { messages: @product.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@product.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 
@@ -62,7 +62,7 @@ module Api
         if @product.update(status_params)
           render json: serializer(@product), status: :ok
         else
-          render json: { messages: @product.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@product.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 

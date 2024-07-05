@@ -4,6 +4,8 @@
 module Users
   # Override the default Devise passwords controller
   class PasswordsController < Devise::PasswordsController
+    include Api::V1::PasswordsControllerDoc
+    prepend_before_action :require_no_authentication
     respond_to :json
 
     def create

@@ -8,7 +8,7 @@ module Api
     module OrdersControllerDoc
       extend Apipie::DSL::Concern
 
-      api :GET, '/api/v1/orders', 'Retrieve all orders'
+      api :GET, '/orders', 'Retrieve all orders'
       description <<-DESC
         Returns a list of orders.
         - If authenticated as admin, can see all orders.
@@ -49,7 +49,7 @@ module Api
       EXAMPLE
       def index; end
 
-      api :GET, '/api/v1/orders/:id', 'Retrieve an order'
+      api :GET, '/orders/:id', 'Retrieve an order'
       description <<-DESC
         Returns the details of a specific order.
         - If authenticated as admin, can see any order.
@@ -89,7 +89,7 @@ module Api
       EXAMPLE
       def show; end
 
-      api :POST, '/api/v1/orders', 'Create a new order'
+      api :POST, '/orders', 'Create a new order'
       description <<-DESC
         Creates a new order.
         - Only customers can create orders.
@@ -123,7 +123,7 @@ module Api
       EXAMPLE
       def create; end
 
-      api :DELETE, '/api/v1/orders/:id', 'Delete an order'
+      api :DELETE, '/orders/:id', 'Delete an order'
       description <<-DESC
         Deletes an order.
         - Only the owner of the order or an admin can delete an order.

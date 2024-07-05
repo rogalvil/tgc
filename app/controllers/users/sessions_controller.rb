@@ -4,11 +4,21 @@
 module Users
   # Override the default Devise sessions controller
   class SessionsController < Devise::SessionsController
+    include Api::V1::SessionsControllerDoc
     respond_to :json
+
+    def create
+      self.resource = warden.authenticate!(auth_options)
+      sign_in(resource_name, resource)
+      yield resource if block_given?
+      respond_with resource, {}
+    end
 
     def destroy
       @authenticated = true
-      super
+      Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+      yield if block_given?
+      respond_to_on_destroy
     end
 
     private
@@ -21,10 +31,10 @@ module Users
     def respond_to_on_destroy
       if @authenticated && current_user.guest?
         # current_user is logged out successfully
-        render json: { messages: ['Logout successfully'] }, status: :ok
+        render_json_messages(['Logout successfully'], :ok)
       else
         # current_user is not logged out successfully
-        render json: { messages: ['Logout was not successful'] }, status: :unprocessable_entity
+        render_json_messages(['Logout was not successful'], :unprocessable_entity)
       end
     end
 
@@ -34,8 +44,7 @@ module Users
         render json: { user: UserSerializer.new(current_user).serializable_hash }, status: :ok
       else
         # current_user is not logged in successfully
-        render json: { messages: ['Invalid Email or Password'] },
-               status: :unprocessable_entity
+        render_json_messages(['Invalid Email or Password'], :unprocessable_entity)
       end
     end
   end

@@ -23,30 +23,30 @@ class ApplicationController < ActionController::API
 
   private
 
-  def render_json_error(messages, status)
+  def render_json_messages(messages, status)
     render json: { messages: }, status:
   end
 
   def render_not_found
-    render_json_error('The requested route was not found', :not_found)
+    render_json_messages('The requested route was not found', :not_found)
   end
 
   def handle_unauthorized(exception)
     error_message = exception.policy::ERROR_MESSAGES[exception.rule.to_sym] ||
                     'You are not allowed to perform this action'
-    render_json_error([error_message], :forbidden)
+    render_json_messages([error_message], :forbidden)
   end
 
   def handle_param_missing(exception)
-    render_json_error([exception.message], :bad_request)
+    render_json_messages([exception.message], :bad_request)
   end
 
   def handle_param_invalid(exception)
-    render_json_error(["Invalid parameter #{exception.param}"], :bad_request)
+    render_json_messages(["Invalid parameter #{exception.param}"], :bad_request)
   end
 
   def handle_record_not_found
-    render_json_error(['Record not found'], :not_found)
+    render_json_messages(['Record not found'], :not_found)
   end
 
   protected

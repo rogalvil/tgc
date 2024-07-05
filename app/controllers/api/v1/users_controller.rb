@@ -27,7 +27,7 @@ module Api
         if @user.save
           render json: serializer(@user), status: :created
         else
-          render_json_error(@user.errors.full_messages.uniq, :unprocessable_entity)
+          render_json_messages(@user.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 
@@ -36,7 +36,7 @@ module Api
         if @user.update(user_params)
           render json: serializer(@user), status: :ok
         else
-          render_json_error(@user.errors.full_messages.uniq, :unprocessable_entity)
+          render_json_messages(@user.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 

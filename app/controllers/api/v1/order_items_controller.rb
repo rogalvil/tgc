@@ -27,7 +27,7 @@ module Api
         if @order_item.save
           render json: serializer(@order_item), status: :created
         else
-          render json: { messages: @order_item.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@order_item.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 
@@ -36,7 +36,7 @@ module Api
         if @order_item.update(order_item_params)
           render json: serializer(@order_item), status: :ok
         else
-          render json: { messages: @order_item.errors.full_messages.uniq }, status: :unprocessable_entity
+          render_json_messages(@order_item.errors.full_messages.uniq, :unprocessable_entity)
         end
       end
 

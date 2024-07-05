@@ -8,7 +8,7 @@ module Api
     module OrderItemsControllerDoc
       extend Apipie::DSL::Concern
 
-      api :GET, '/api/v1/orders/:order_id/items', 'Retrieve all items for an order'
+      api :GET, '/orders/:order_id/items', 'Retrieve all items for an order'
       description <<-DESC
         Retrieves all items for an order.
         - Only the owner of the order or an admin can view the items.
@@ -66,7 +66,7 @@ module Api
       EXAMPLE
       def index; end
 
-      api :GET, '/api/v1/orders/:order_id/items/:id', 'Retrieve an item for an order'
+      api :GET, '/orders/:order_id/items/:id', 'Retrieve an item for an order'
       description <<-DESC
         Retrieves an item for an order.
         - Only the owner of the order or an admin can view the item.
@@ -101,7 +101,7 @@ module Api
       EXAMPLE
       def show; end
 
-      api :POST, '/api/v1/orders/:order_id/items', 'Create a new order item'
+      api :POST, '/orders/:order_id/items', 'Create a new order item'
       description <<-DESC
         Creates a new order item.
         - Only the owner of the order or an admin can create an item.
@@ -139,7 +139,7 @@ module Api
       EXAMPLE
       def create; end
 
-      api :PATCH, '/api/v1/orders/:order_id/items/:id', 'Update an order item'
+      api :PATCH, '/orders/:order_id/items/:id', 'Update an order item'
       description <<-DESC
         Updates an order item.
         - Only the owner of the order or an admin can update an item.
@@ -178,7 +178,7 @@ module Api
       EXAMPLE
       def update; end
 
-      api :DELETE, '/api/v1/orders/:order_id/items/:id', 'Delete an order item'
+      api :DELETE, '/orders/:order_id/items/:id', 'Delete an order item'
       description <<-DESC
         Deletes an order item.
         - Only the owner of the order or an admin can delete an item.
