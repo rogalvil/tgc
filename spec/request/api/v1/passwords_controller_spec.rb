@@ -13,13 +13,13 @@ RSpec.describe Users::PasswordsController, type: :request do
       expect(email.to).to include(user.email)
       expect(email.subject).to eq('Reset password instructions')
       expect(email.body.encoded).to include('Reset token:')
-      expect(json['message']).to eq('Instructions have been sent to your email with the reset token.')
+      expect(json['messages']).to include('Instructions have been sent to your email with the reset token')
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns an error when email is invalid' do
       post '/api/v1/password', params: { user: { email: 'invalid@example.com' } }
-      expect(json['errors']).to include('Email not found')
+      expect(json['messages']).to include('Email not found')
       expect(ActionMailer::Base.deliveries.count).to eq(0)
       expect(response).to have_http_status(422)
     end
@@ -39,13 +39,20 @@ RSpec.describe Users::PasswordsController, type: :request do
         }
       }
       put '/api/v1/password', params: reset_params
-      expect(json['message']).to eq('Your password has been successfully changed.')
+      expect(json['messages']).to include('Password has been successfully changed')
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns an error when token is invalid' do
-      put '/api/v1/password', params: { user: { reset_password_token: 'invalid', password: 'newpassword', password_confirmation: 'newpassword' } }
-      expect(json['errors']).to include('Reset password token is invalid')
+      invalid_reset_params = {
+        user: {
+          reset_password_token: 'invalid',
+          password: 'newpassword',
+          password_confirmation: 'newpassword'
+        }
+      }
+      put '/api/v1/password', params: invalid_reset_params
+      expect(json['messages']).to include('Reset password token is invalid')
       expect(response).to have_http_status(422)
     end
   end

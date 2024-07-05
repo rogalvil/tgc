@@ -1,6 +1,8 @@
 # TGC Project
 
-This project is an e-commerce API built with Ruby on Rails.
+This project is an e-commerce API built with Ruby on Rails. It provides endpoints
+to manage users, products, orders, and items. It also includes authentication.
+
 It uses Docker for containerization and has support for DevContainers to
 facilitate development in consistent environments.
 
@@ -217,3 +219,17 @@ http://localhost:3000/apipie
 - **POST /api/v1/orders/:order_id/items**: Create a new order item
 - **PATCH /api/v1/orders/:order_id/items/:id**: Update an order item
 - **DELETE /api/v1/orders/:order_id/items/:id**: Delete an order item
+
+### Sessions
+
+- ** POST /api/v1/login**: Login a user
+- ** DELETE /api/v1/logout**: Logout a user
+
+### Registration
+
+- ** POST /api/v1/signup**: Register a new user
+
+### Password
+
+- ** POST /api/v1/password**: Send reset password instructions
+- ** PATCH /api/v1/password**: Reset password

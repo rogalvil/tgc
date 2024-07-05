@@ -33,7 +33,19 @@ Rails.application.routes.draw do
                        sessions: 'users/sessions',
                        registrations: 'users/registrations',
                        passwords: 'users/passwords'
-                     }
+                     },
+                     skip: %i[sessions registrations passwords]
+
+  devise_scope :user do
+    post 'api/v1/login', to: 'users/sessions#create', as: :user_session
+    delete 'api/v1/logout', to: 'users/sessions#destroy', as: :destroy_user_session
+
+    post 'api/v1/signup', to: 'users/registrations#create', as: :user_registration
+
+    post 'api/v1/password', to: 'users/passwords#create'
+    patch 'api/v1/password', to: 'users/passwords#update'
+    put 'api/v1/password', to: 'users/passwords#update'
+  end
 
   # Catch all unmatched routes
   match '*unmatched', to: 'application#route_not_found', via: :all

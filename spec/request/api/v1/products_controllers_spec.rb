@@ -187,10 +187,14 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:created)
       end
 
-      it 'returns status code bad request with invalid attributes' do
-        invalid_attributes = { product: { name: '', price: 0, stock: -1 } }
+      it 'returns status code unprocessable content with invalid attributes' do
+        invalid_attributes = { product: { name: '', sku: '', stock: -1, price: -1 } }
         post '/api/v1/products', params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        expect(json['messages']).to include('Name can\'t be blank')
+        expect(json['messages']).to include('Stock must be greater than or equal to 0')
+        expect(json['messages']).to include('Sku can\'t be blank')
+        expect(json['messages']).to include('Price must be greater than or equal to 0')
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -212,7 +216,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
     end
   end
 
-  describe 'PUT /api/v1/products/:id' do
+  describe 'PATCH /api/v1/products/:id' do
     let(:valid_attributes) do
       {
         product: {
@@ -227,7 +231,9 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       before { @auth_token = login_with_api(email: admin.email, password: admin.password) }
 
       it 'updates the product' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/products/#{active_product.id}",
+              params: valid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['data']['attributes']['sku']).to eq('SKU123UPDATED')
         expect(json['data']['attributes']['name']).to eq('Updated Product')
         expect(json['data']['attributes']['description']).to eq('Updated product description')
@@ -238,40 +244,53 @@ RSpec.describe Api::V1::ProductsController, type: :request do
 
       it 'returns the price rounded if it has more decimals' do
         invalid_attributes = { product: { price: 54.6999 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/products/#{active_product.id}",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['data']['attributes']['price'].to_f).to eq(54.70)
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status code bad request with invalid sku' do
+      it 'returns status code unprocessable content with invalid sku' do
         invalid_attributes = { product: { sku: '' } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/products/#{active_product.id}",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Sku can\'t be blank')
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it 'returns status code bad request with invalid name' do
+      it 'returns status code unprocessable content with invalid name' do
         invalid_attributes = { product: { name: '' } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/products/#{active_product.id}",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Name can\'t be blank')
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it 'returns status code bad request with invalid price' do
+      it 'returns status code unprocessable content with invalid price' do
         invalid_attributes = { product: { price: 'a' } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/products/#{active_product.id}",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Price is not a number')
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it 'returns status code unprocessable with negative price' do
+      it 'returns status code unprocessable content with negative price' do
         invalid_attributes = { product: { price: -1000 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/products/#{active_product.id}",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
         expect(json['messages']).to include('Price must be greater than or equal to 0')
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
-      it 'returns status code bad request with invalid stock' do
+      it 'returns status code unprocessable content with invalid stock' do
         invalid_attributes = { product: { stock: -10 } }
-        put "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/products/#{active_product.id}", params: invalid_attributes, headers: { 'Authorization': @auth_token }
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -279,14 +298,14 @@ RSpec.describe Api::V1::ProductsController, type: :request do
       before { @auth_token = login_with_api(email: customer.email, password: customer.password) }
 
       it 'returns status code 403' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
+        patch "/api/v1/products/#{active_product.id}", params: valid_attributes, headers: { 'Authorization': @auth_token }
         expect(response).to have_http_status(:forbidden)
       end
     end
 
     context 'when not authenticated' do
       it 'returns status code 401' do
-        put "/api/v1/products/#{active_product.id}", params: valid_attributes
+        patch "/api/v1/products/#{active_product.id}", params: valid_attributes
         expect(json['errors'][0]['title']).to include('You need to sign in or sign up before continuing.')
         expect(response).to have_http_status(:unauthorized)
       end
@@ -338,10 +357,13 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status code bad request with invalid attributes' do
+      it 'returns status code unprocessable content with invalid attributes' do
         invalid_attributes = { product: { stock: -5 } }
-        patch "/api/v1/products/#{active_product.id}/stock", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(response).to have_http_status(:bad_request)
+        patch "/api/v1/products/#{active_product.id}/stock",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Stock must be greater than or equal to 0')
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -376,10 +398,13 @@ RSpec.describe Api::V1::ProductsController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'returns status bad request status with invalid attributes' do
-        patch "/api/v1/products/#{active_product.id}/status", params: invalid_attributes, headers: { 'Authorization': @auth_token }
-        expect(json['messages']).to include('Invalid parameter status')
-        expect(response).to have_http_status(:bad_request)
+      it 'returns status unprocessable content status with invalid attributes' do
+        patch "/api/v1/products/#{active_product.id}/status",
+              params: invalid_attributes,
+              headers: { 'Authorization': @auth_token }
+        expect(json['messages']).to include('Status can\'t be blank')
+        expect(json['messages']).to include('Status is not included in the list')
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

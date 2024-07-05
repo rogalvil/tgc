@@ -3,5 +3,5 @@
 # Product serializer
 class ProductSerializer
   include JSONAPI::Serializer
-  attributes :id, :sku, :name, :description, :price, :stock, :status
+  attributes :sku, :name, :description, :price, :stock, :status
 end
