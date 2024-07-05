@@ -1,6 +1,8 @@
 # TGC Project
 
-This project is an e-commerce API built with Ruby on Rails.
+This project is an e-commerce API built with Ruby on Rails. It provides endpoints
+to manage users, products, orders, and items. It also includes authentication.
+
 It uses Docker for containerization and has support for DevContainers to
 facilitate development in consistent environments.
 
