@@ -9,25 +9,29 @@ module Users
 
     def create
       build_resource(sign_up_params)
-
-      resource.save
-      yield resource if block_given?
-      if resource.persisted?
-        if resource.active_for_authentication?
-          sign_up(resource_name, resource)
-          respond_with resource, location: after_sign_up_path_for(resource)
-        else
-          expire_data_after_sign_in!
-          respond_with resource, location: after_inactive_sign_up_path_for(resource)
-        end
+      if resource.save
+        handle_successful_signup
       else
-        clean_up_passwords resource
-        set_minimum_password_length
-        respond_with resource
+        handle_unsuccessful_signup
       end
     end
 
     private
+
+    def handle_successful_signup
+      if resource.active_for_authentication?
+        sign_up(resource_name, resource)
+      else
+        expire_data_after_sign_in!
+      end
+      respond_with resource, location: {}
+    end
+
+    def handle_unsuccessful_signup
+      clean_up_passwords resource
+      set_minimum_password_length
+      respond_with resource
+    end
 
     def respond_with(resource, _opts = {})
       if request.method == 'DELETE'
@@ -38,8 +42,7 @@ module Users
         render json: { user: UserSerializer.new(current_user).serializable_hash }, status: :ok
       else
         # current_user is not created successfully
-        render json: { messages: resource.errors.full_messages.uniq },
-               status: :unprocessable_entity
+        render_json_messages(resource.errors.full_messages.uniq, :unprocessable_entity)
       end
     end
   end

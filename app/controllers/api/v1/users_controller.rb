@@ -33,7 +33,7 @@ module Api
 
       def update
         authorize! @user, to: :update?
-        if @user.update(user_params)
+        if @user.update(user_update_params)
           render json: serializer(@user), status: :ok
         else
           render_json_messages(@user.errors.full_messages.uniq, :unprocessable_entity)
@@ -62,6 +62,10 @@ module Api
 
       def user_params
         params.require(:user).permit(:name, :email, :password, :role)
+      end
+
+      def user_update_params
+        params.require(:user).permit(:name)
       end
     end
   end
