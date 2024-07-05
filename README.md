@@ -222,14 +222,14 @@ http://localhost:3000/apipie
 
 ### Sessions
 
-- ** POST /api/v1/login**: Login a user
-- ** DELETE /api/v1/logout**: Logout a user
+- **POST /api/v1/login**: Login a user
+- **DELETE /api/v1/logout**: Logout a user
 
 ### Registration
 
-- ** POST /api/v1/signup**: Register a new user
+- **POST /api/v1/signup**: Register a new user
 
 ### Password
 
-- ** POST /api/v1/password**: Send reset password instructions
-- ** PATCH /api/v1/password**: Reset password
+- **POST /api/v1/password**: Send reset password instructions
+- **PATCH /api/v1/password**: Reset password
