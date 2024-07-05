@@ -4,7 +4,7 @@
 class OrderSerializer
   include JSONAPI::Serializer
 
-  attributes :id, :total_price, :status, :created_at, :updated_at
+  attributes :total_price, :status
   belongs_to :user
   has_many :order_items
 end

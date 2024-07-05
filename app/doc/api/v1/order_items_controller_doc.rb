@@ -14,7 +14,14 @@ module Api
         - Only the owner of the order or an admin can view the items.
       DESC
       param :order_id, :number, desc: 'ID of the order', required: true
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": [
           {
@@ -73,7 +80,14 @@ module Api
       DESC
       param :order_id, :number, desc: 'ID of the order', required: true
       param :id, :number, desc: 'ID of the order item', required: true
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
@@ -111,7 +125,22 @@ module Api
         param :product_id, :number, desc: 'ID of the product', required: true
         param :quantity, :number, desc: 'Quantity of the product', required: true
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "order_item": {
+          "product_id": 1,
+          "quantity": 2
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
@@ -150,7 +179,21 @@ module Api
       param :order_item, Hash, desc: 'Order item parameters', required: true do
         param :quantity, :number, desc: 'Quantity of the product', required: true
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "order_item": {
+          "quantity": 3
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
@@ -186,10 +229,15 @@ module Api
       DESC
       param :order_id, :number, desc: 'ID of the order', required: true
       param :id, :number, desc: 'ID of the order item', required: true
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
       {
-        "status": "204 No Content"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
       }
+
+      Response Body:
+      (No content, status: 204)
       EXAMPLE
       def destroy; end
     end

@@ -16,14 +16,20 @@ module Api
         - Supports search by query parameter for product name or description.
       DESC
       param :query, String, desc: 'Search query for product name or description', required: false
+      header 'Authorization', 'Bearer token', required: false
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": [
           {
             "id": "1",
             "type": "product",
             "attributes": {
-              "id": 1,
               "sku": "SKU1",
               "name": "Product 1",
               "description": "Description 1",
@@ -33,10 +39,9 @@ module Api
             }
           },
           {
-            "id": "2",
+            "id": 2,
             "type": "product",
             "attributes": {
-              "id": 2,
               "sku": "SKU2",
               "name": "Product 2",
               "description": "Description 2",
@@ -57,13 +62,19 @@ module Api
         - If authenticated as customer or guest, can see only active and preorder products.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
+      header 'Authorization', 'Bearer token', required: false
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "product",
           "attributes": {
-            "id": 1,
             "sku": "SKU1",
             "name": "Product 1",
             "description": "Description 1",
@@ -87,13 +98,30 @@ module Api
         param :stock, :number, desc: 'Stock of the product', required: true
         param :description, String, desc: 'Description of the product', required: false
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "product": {
+          "sku": "SKU1",
+          "name": "Product 1",
+          "price": 10.0,
+          "stock": 100,
+          "description": "Description 1"
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "product",
           "attributes": {
-            "id": 1,
             "sku": "SKU1",
             "name": "Product 1",
             "description": "Description 1",
@@ -118,18 +146,35 @@ module Api
         param :price, :decimal, desc: 'Price of the product', required: false
         param :stock, :number, desc: 'Stock of the product', required: false
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "product": {
+          "sku": "UPDATEDSKU",
+          "name": "Updated Product",
+          "description": "Updated Description",
+          "price": 20.0,
+          "stock": 200
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "product",
           "attributes": {
-            "id": 1,
             "sku": "SKU1",
-            "name": "Product 1",
-            "description": "Description 1",
-            "price": 10.0,
-            "stock": 100,
+            "name": "Updated Product",
+            "description": "Updated Description",
+            "price": 20.0,
+            "stock": 200,
             "status": "active"
           }
         }
@@ -142,6 +187,16 @@ module Api
         Deletes a product. Only admins can delete products.
       DESC
       param :id, :number, desc: 'ID of the product', required: true
+      header 'Authorization', 'Bearer token', required: true
+      example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
+      (No content, status: 204)
+      EXAMPLE
       def destroy; end
 
       api :PATCH, '/products/:id/stock', 'Update the stock of a product'
@@ -152,18 +207,31 @@ module Api
       param :product, Hash, desc: 'Product information', required: true do
         param :stock, :number, desc: 'New stock of the product', required: true
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "product": {
+          "stock": 200
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "product",
           "attributes": {
-            "id": 1,
             "sku": "SKU1",
             "name": "Product 1",
             "description": "Description 1",
             "price": 10.0,
-            "stock": 100,
+            "stock": 200,
             "status": "active"
           }
         }
@@ -177,21 +245,34 @@ module Api
       DESC
       param :id, :number, desc: 'ID of the product', required: true
       param :product, Hash, desc: 'Product information', required: true do
-        param :status, String, desc: 'New status of the product', required: true
+        param :status, String, desc: 'New status of the product. Allowed values: active, inactive, discontinued, preorder', required: true
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "product": {
+          "status": "discontinued"
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "product",
           "attributes": {
-            "id": 1,
             "sku": "SKU1",
             "name": "Product 1",
             "description": "Description 1",
             "price": 10.0,
             "stock": 100,
-            "status": "active"
+            "status": "discontinued"
           }
         }
       }

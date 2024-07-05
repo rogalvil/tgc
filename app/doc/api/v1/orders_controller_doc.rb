@@ -14,18 +14,22 @@ module Api
         - If authenticated as admin, can see all orders.
         - If authenticated as customer, can see only their own orders.
       DESC
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": [
           {
             "id": "1",
             "type": "order",
             "attributes": {
-              "id": 1,
               "total_price": 100.0,
-              "status": "pending",
-              "created_at": "2024-06-22T00:00:00.000Z",
-              "updated_at": "2024-06-22T00:00:00.000Z"
+              "status": "pending"
             },
             "relationships": {
               "user": {
@@ -56,17 +60,21 @@ module Api
         - If authenticated as customer, can see only their own orders.
       DESC
       param :id, :number, desc: 'ID of the order', required: true
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "order",
           "attributes": {
-            "id": 1,
             "total_price": 100.0,
-            "status": "pending",
-            "created_at": "2024-06-22T00:00:00.000Z",
-            "updated_at": "2024-06-22T00:00:00.000Z"
+            "status": "pending"
           },
           "relationships": {
             "user": {
@@ -95,17 +103,28 @@ module Api
         - Only customers can create orders.
       DESC
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "order": {
+          "user_id": 1,
+          "total_price": 0.0,
+          "status": "pending"
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "order",
           "attributes": {
-            "id": 1,
             "total_price": 0.0,
             "status": "pending",
-            "user_id": 1,
-            "created_at": "2024-06-22T00:00:00.000Z",
-            "updated_at": "2024-06-22T00:00:00.000Z"
           },
           "relationships": {
             "user": {
@@ -130,10 +149,15 @@ module Api
         - Orders can only be deleted if they are in a pending status.
       DESC
       param :id, :number, desc: 'ID of the order', required: true
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
       {
-        "status": "204 No Content"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
       }
+
+      Response Body:
+      (No content, status: 204)
       EXAMPLE
       def destroy; end
 
@@ -146,18 +170,28 @@ module Api
       param :order, Hash, desc: 'Order object', required: true do
         param :status, String, desc: 'New status for the order', required: true
       end
+      header 'Authorization', 'Bearer token', required: true
       example <<-EXAMPLE
+      Request Headers:
+      {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9..."
+      }
+
+      Request Body:
+      {
+        "order": {
+          "status": "shipped"
+        }
+      }
+
+      Response Body:
       {
         "data": {
           "id": "1",
           "type": "order",
           "attributes": {
-            "id": 1,
             "total_price": 100.0,
-            "status": "shipped",
-            "user_id": 1,
-            "created_at": "2024-06-22T00:00:00.000Z",
-            "updated_at": "2024-06-22T00:00:00.000Z"
+            "status": "shipped"
           },
           "relationships": {
             "user": {
