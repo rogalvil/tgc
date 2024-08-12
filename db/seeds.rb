@@ -7,3 +7,15 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+admin_attributes = {
+  name: 'Admin User',
+  email: 'rogalvil+admin@gmail.com',
+  password: 'Adm1n+p4ssw0rD',
+  role: 'admin'
+}
+
+User.create_with(
+  admin_attributes
+).find_or_initialize_by(email: admin_attributes[:email]).tap do |user|
+  user.update!(admin_attributes)
+end
